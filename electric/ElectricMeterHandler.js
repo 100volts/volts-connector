@@ -1,7 +1,7 @@
 import ElectriMeter from "./ElectriMeter";
 
-export default class{
-    async getElmeterData(companyName, accesToken) {
+export class ElectricMeterHandler{
+    async getElmeterData(companyName, accesToken,com) {
         this.meter=null;//macking shore to to fill up the ram with new and newwer meters
         try{
             const response = await fetch(
@@ -23,7 +23,7 @@ export default class{
             address_list.forEach(element => {
                 console.log(element)
                 //todo make the call for every meter
-                writeElmeterDataFromAddress(element)
+                writeElmeterDataFromAddress(element,com)
             });
             
         }catch (error) {
@@ -31,9 +31,10 @@ export default class{
         }
     }
     
-    async writeElmeterDataFromAddress(address){
+    async writeElmeterDataFromAddress(address,com){
         //Create new meter and read it
         let elMeter= new ElectriMeter();
-        elMeter.setAddressName()
+        elMeter.setAddressName(address,address)
+        elMeter.readModbusData(com)
     }
 }

@@ -14,4 +14,3 @@ export default async (address) => {
     console.log("Len 2 Volt data", allFoundAddressData);
     return allFoundAddressData;
 };
-};

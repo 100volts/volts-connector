@@ -2,7 +2,7 @@ import ModbusRTU from "modbus-serial";
 import getMeterValueLen2 from "../GetMeterValueLen2.js"
 import getMeterValueLen4 from "../GetMeterValueLen4.js"
 
-export default class{
+export class ElectriMeter{
 /*
   constructor(
     name,address,value,
@@ -67,10 +67,10 @@ export default class{
             this.totActivePower=totActivePower;
         }
 
-    async readModbusData(){
+    async readModbusData(com){
         //Prep
         const client = new ModbusRTU();
-        client.connectRTUBuffered("COM3", { baudRate: 9600 });
+        // client.connectRTUBuffered(com, { baudRate: 9600 });/"COM3"C
         //Read
         const len4Data = getMeterValueLen4(this.address)
         const len2Data = getMeterValueLen2(this.address)
