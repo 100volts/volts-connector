@@ -254,7 +254,7 @@ async function readMeters() {
           pfl2: len2Data[10].toFixed(6),
           pfl3: len2Data[11].toFixed(6),
           totalActivePpower: len2Data[12].toFixed(2),
-          totalActiveEnergyImportTariff1: 0,
+          totalActiveEnergyImportTariff1: activePowerData.toFixed(2),
           totalActiveEnergyImportTariff2: 0,
         });
         await sleep(100);
