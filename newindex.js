@@ -51,12 +51,6 @@ async function setNextRead(){
     console.log("New minReadTime: ",minReadTime.getHours());
   }
 }
-async function checkNexRead(nextreadTime){
-  if(new Date()<nextreadTime){  }else{
-    //console.log("Next read is HERE!!: ",nextRead.getMinutes());
-    //await setNextRead();
-  }
-}
 async function setMitterSettings(){
     const response = await fetch(
       `http://${urladdress}:8081/elmeterc/settings`,
@@ -122,11 +116,14 @@ async function mainScreen() {
   //await checkNexRead(nextRead);
   //await sleep()
   //await sleepALot();
-  //await mainScreen();
+  console.log("Minsleep time",sleepTime);
+  await sleep(sleepTime);
+  await mainScreen();
 }
 
 
 async function sendMerterDataRequestPost(postMeterData) {
+  console.log("Post meter data",postMeterData);
   const meterOptions = {
     hostname: urladdress,
     port: 8081,
@@ -162,8 +159,6 @@ async function sendMerterDataRequestPost(postMeterData) {
 const sleepALot = (ms = 60000) => new Promise((r) => setTimeout(r, ms));
 
 async function readMeters() {
-  //set up modbus for reading
-
   function getTodaysDate() {
     const today = new Date();
 
@@ -215,6 +210,7 @@ async function readMeters() {
   }
 
   const getMetersValue = async (meters) => {
+    console.log("Get meters value",meters);
     var volatageMeter = [];
     try {
       // get value of all meters
@@ -222,6 +218,7 @@ async function readMeters() {
         await sleep(50);
         const activePowerData = await getMeterValue(meter.address);
         const len2Data = await getMeterValueLen2(meter.address);
+        console.log("Len 2 data",len2Data);
         volatageMeter.push({
           name: meter.name,
           value: activePowerData,
@@ -265,6 +262,7 @@ async function readMeters() {
       console.log(e);
     } finally {
       //TODO add post to server here
+      console.log("Volatage meter",volatageMeter);
       return volatageMeter;
     }
   };
@@ -301,15 +299,6 @@ async function readMeters() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   async function main() {
-    const dataPrep = [
-      { id: 1, name: "GRT-1" },
-      { id: 2, name: "Ampak-2" },
-      { id: 3, name: "Ledena Voda-3" },
-      { id: 4, name: "Hladilnici-4" },
-      { id: 5, name: "Kompresorno-5" },
-      { id: 6, name: "Priemno-6" },
-      { id: 7, name: "Trafo#1-7" },
-    ];
     const header = [
       "Meter Name",
       "Active Energy",
@@ -349,19 +338,93 @@ async function readMeters() {
       item.totActivePower,
     ]);
     combined.unshift(header);
-
+    meterSettingsResponse.forEach(async (meter) => {
+      meter.lastTimeRead=new Date();
+      meter.nextTimeRead=new Date(meter.lastTimeRead.getTime()+meter.timeGapRead);
+      console.log("meter.nextTimeRead",meter.nextTimeRead)
+      sleepTime=Math.abs(meter.nextTimeRead-new Date());
+      console.log("sleepTime",sleepTime);
+    })
     console.log("Exel Date:", combined);
-
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(combined);
     XLSX.utils.book_append_sheet(workbook, worksheet, getTodaysDate());
     XLSX.writeFile(workbook, "output.xlsx");
     console.log("Excel file has been created successfully.");
   }
+  
+  async function readMeters(meter) {
+    console.log("Read meters for meter in th read meter function duh",meter.name);
+    const header = [
+      "Meter Name",
+      "Active Energy",
+      "Voltage L1",
+      "Voltage L2",
+      "Voltage L3",
+      "Current L1",
+      "Current L2",
+      "Current L3",
+      "Active power L1",
+      "Active power L2",
+      "Active power L3",
+      "Power factor L1",
+      "Power factor L2",
+      "Power factor L3",
+      "Total active power",
+    ];
+    const totalPowerData = await getMetersValue([meter]);
+    console.log("totalPowerData",totalPowerData);
+    const names = totalPowerData.map((item) => item.name);
+    const values = totalPowerData.map((item) => item.value);
+    const combined = totalPowerData.map((item) => [
+      item.name,
+      item.value,
+      item.voltageL1,
+      item.voltageL2,
+      item.voltageL3,
+      item.currentL1,
+      item.currentL2,
+      item.currentL3,
+      item.activePowerL1,
+      item.activePowerL2,
+      item.activePowerL3,
+      item.powerFactorL1,
+      item.powerFactorL2,
+      item.powerFactorL3,
+      item.totActivePower,
+    ]);
+    combined.unshift(header);
 
-  main();
+    console.log("Exel Date:", combined);
+    meter.lastTimeRead=new Date();
+    meter.nextTimeRead=new Date(meter.lastTimeRead.getTime()+meter.timeGapRead-10);
+    console.log("mater name: ",meter.name);
+    console.log("meter.nextTimeRead",meter.nextTimeRead);
+  }
+  if(firstRun){
+    await main();
+    firstRun=false;
+  }else{
+    for(let meter of meterSettingsResponse){
+      console.log("Meter anme", meter.name);
+      console.log("meter.nextTimeRead in the for each", meter.nextTimeRead);
+      console.log("Date new in the for each", new Date());
+      console.log("Data check", meter.nextTimeRead <= new Date());
+      if (meter.nextTimeRead <= new Date()) {
+        console.log("Metter to read", [meter]);
+        await readMeters(meter);
+      }
+    }
+  }
 }
-
+let sleepTime=0;
+async function checkNexRead(nextreadTime){
+  if(new Date()<nextreadTime){  }else{
+    //console.log("Next read is HERE!!: ",nextRead.getMinutes());
+    //await setNextRead();
+  }
+}
+let firstRun=true;
 
 await login();
 await setMitterSettings();
