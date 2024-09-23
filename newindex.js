@@ -36,86 +36,77 @@ async function welcome() {
 }
 //UI elements end
 
-const loginData = JSON.stringify({
-  email: "plamen@mail.com",
-  password: "12345678",
-});
-const loginOptions = {
-  hostname: "192.168.0.102",
-  port: 8081,
-  path: "/api/vi/auth/authenticate",
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Content-Length": Buffer.byteLength(loginData),
-  },
-};
-
-let reqdata;
 let accesToken;
-async function sendPostRequest() {
-  return new Promise((resolve, reject) => {
-    const req = http.request(loginOptions, (res) => {
-      let data = "";
-      res.on("data", (chunk) => {
-        data += chunk;
-      });
-      res.on("end", () => {
-        try {resolve(data);} catch (err) {reject(err);}
-      });
-    })
-    req.on("error", (e) => {reject(`Problem with request: ${e.message}`);});
-    req.write(loginData);
-    req.end();
-  });
-}
 
-
-async function sendMerterDataRequestPost(postMeterData) {
-  const meterOptions = {
-    hostname: "192.168.0.102",
-    port: 8081,
-    path: "/elmeter/data",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(postMeterData),
-      Authorization: `Bearer ${accesToken}`,
-    },
-    protocol: "http:",
-  };
-  return new Promise((resolve, reject) => {
-    const req = http.request(meterOptions, (res) => {
-      let responseData = "";
-
-      res.on("data", (chunk) => {
-        responseData += chunk;
-      });
-
-      res.on("end", () => {
-        resolve(responseData);
-      });
-    });
-
-    req.on("error", (e) => {
-      reject(`Problem with request: ${e.message}`);
-    });
-    req.write(postMeterData);
-    req.end();
-  });
-}
-
-async function postElMeterData() {
-  await sendPostRequest().then((data) => (reqdata = data));
-}
 const nextRead=new Date();
-async function checkNexRead(){
+const allMetersHaveBeenRead=false;
+async function setNextRead(){
   console.log("Next read before: ",nextRead.getMinutes());
   nextRead.setMinutes(nextRead.getMinutes()+readGap)
   console.log("Next read after: ",nextRead.getMinutes());
   console.log("Next sleep time: ",Math.abs(new Date()-nextRead));
   const sleepNextRead = (ms = Math.abs(new Date()-nextRead)) => new Promise((r) => setTimeout(r, ms));
-  await sleepNextRead();
+  if(minReadTime>new Date()){
+    minReadTime=nextRead;
+    console.log("New minReadTime: ",minReadTime.getHours());
+  }
+}
+const minReadTime=new Date();
+async function checkNexRead(nextreadTime){
+  if(new Date()<nextreadTime){
+
+  }else{
+    //console.log("Next read is HERE!!: ",nextRead.getMinutes());
+    //await setNextRead();
+  }
+}
+
+
+let meterSettingsResponse=[]
+async function setMitterSettings(){
+    const response = await fetch(
+      `http://${urladdress}:8081/elmeterc/settings`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accesToken}`,
+        },
+        body:JSON.stringify({
+          "company_name":"Markeli"
+        })  
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const datat = await response.json();
+    const { settings } = datat;
+    meterSettingsResponse=settings;
+    console.log("Meter settings: ",meterSettingsResponse);
+}
+const loginData = JSON.stringify({
+  email: "plamen@mail.com",
+  password: "12345678",
+});
+async function login(){
+    const response = await fetch(
+      `http://${urladdress}:8081/api/vi/auth/authenticate`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: loginData
+      }
+    );
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  } 
+  const datat = await response.json();
+  const { access_token } =  datat;
+  accesToken=access_token;  
+  console.log("Tokken: ", accesToken);
 }
 
 async function mainScreen() {
@@ -125,15 +116,20 @@ async function mainScreen() {
   figlet(msg, (err, data) => {
     console.log(gradient.pastel.multiline(data));
   });
-  await postElMeterData();
-  const jsonObject = JSON.parse(reqdata);
-  console.log("Tokken: ", jsonObject["access_token"]);
-  accesToken = jsonObject["access_token"];
+  //await postElMeterData();
+
   //await readMeters();
-  await checkNexRead();
+  if(allMetersHaveBeenRead){
+    const sleepTilNextRead = (ms = minReadTime-new Date()) => new Promise((r) => setTimeout(r, ms));
+    sleepTilNextRead();
+  }
+  await setNextRead();
+  //await checkNexRead(nextRead);
   await mainScreen();
 }
 
-
+await login();
+await setMitterSettings();
 await welcome();
-await mainScreen();
+//await setMitterSettings();
+//await mainScreen();
