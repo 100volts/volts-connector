@@ -113,6 +113,7 @@ async function mainScreen() {
   }
   console.log("Minsleep time",sleepTime);
   await sleep(sleepTime);
+  await login();
   await mainScreen();
 }
 
