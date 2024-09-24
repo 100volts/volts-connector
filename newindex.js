@@ -139,8 +139,8 @@ async function reportError(e){
   const datat = await response.json();
   const { settings } = datat;
   meterSettingsResponse=settings;
-  console.log("Meter settings: ",meterSettingsResponse);
-
+  console.log("Sleeping ");
+  await sleepALot();
 }
 
 function formatDateForTs(date) {
@@ -192,7 +192,6 @@ async function sendMerterDataRequestPost(postMeterData) {
       req.end();
     });
   } catch (e) {
-    await reportError(e)
     console.log("Error in getMetersValue",e);
     throw new Error("Error in getMetersValue",e);
   } 
@@ -267,7 +266,7 @@ async function readMeters() {
           len2Data = await Promise.race([getMeterValueLen2(meter.address), timeout]);
           console.log("Len 2 data",len2Data);
         }catch (e) {
-          await reportError(e)
+          throw new Error("Error in getMetersValue",e);
         }
         volatageMeter.push({
           name: meter.name,
@@ -426,7 +425,7 @@ async function readMeters() {
       XLSX.writeFile(workbook, "output.xlsx");
       console.log("Excel file has been created successfully.");
     }catch(e){
-      reportError(e)
+      await reportError(e)
       throw new Error("Error in first read ",e);
     }
   }
@@ -480,7 +479,7 @@ async function readMeters() {
       console.log("mater name: ",meter.name);
       console.log("meter.nextTimeRead",meter.nextTimeRead);
     }catch(e){
-      reportError(e)
+      await reportError(e)
       console.error("Error in readMeters",e);
       throw new Error("Error in first read ",e);
     }
