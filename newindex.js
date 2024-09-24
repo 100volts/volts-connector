@@ -26,8 +26,6 @@ const sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));//2 mins
 
 //TODO this will be part of the read for every meter
 const client = new ModbusRTU();
-client.connectRTUBuffered("COM3", { baudRate: 9600 });
-client.setID(1);
 
 //Ui elements
 async function welcome() {
@@ -98,63 +96,106 @@ async function login(){
 }
 
 async function mainScreen() {
-  //console.clear();
+  console.clear();
   const msg = "Working";
   figlet(msg, (err, data) => {
     console.log(gradient.pastel.multiline(data));
   });
-  //await postElMeterData();
-
-  await readMeters();
-  /*
-  if(allMetersHaveBeenRead){
-    const sleepTilNextRead = (ms = minReadTime-new Date()) => new Promise((r) => setTimeout(r, ms));
-    sleepTilNextRead();
+  try{
+    await readMeters();
+  }catch(e){
+    console.error("Error in mainScreen",e);
+    await reportError(e);
+    await login();
+    await setMitterSettings();
+    await welcome();
+    await mainScreen();
   }
-  */
-  //await setNextRead();
-  //await checkNexRead(nextRead);
-  //await sleep()
-  //await sleepALot();
   console.log("Minsleep time",sleepTime);
   await sleep(sleepTime);
   await mainScreen();
 }
 
+async function reportError(e){
+  console.log("Error in mainScreen",e);
+  const response = await fetch(
+    `http://${urladdress}:8081/connector/report`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accesToken}`,
+      },
+      body:JSON.stringify({
+        "company_name":"Markeli",
+        "content":e.toString(),
+        "time_stamp": formatDateForTs(new Date())
+      })  
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Network response was not ok : "+formatDateForTs(new Date()));
+  }
+  const datat = await response.json();
+  const { settings } = datat;
+  meterSettingsResponse=settings;
+  console.log("Meter settings: ",meterSettingsResponse);
+
+}
+
+function formatDateForTs(date) {
+  const pad = (num) => num.toString().padStart(2, '0');
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1); // getMonth() returns 0-11
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 async function sendMerterDataRequestPost(postMeterData) {
   console.log("Post meter data",postMeterData);
-  const meterOptions = {
-    hostname: urladdress,
-    port: 8081,
-    path: "/elmeter/data",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(postMeterData),
-      Authorization: `Bearer ${accesToken}`,
-    },
-    protocol: "http:",
-  };
-  return new Promise((resolve, reject) => {
-    const req = http.request(meterOptions, (res) => {
-      let responseData = "";
+  try{
+    const meterOptions = {
+      hostname: urladdress,
+      port: 8081,
+      path: "/elmeter/data",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(postMeterData),
+        Authorization: `Bearer ${accesToken}`,
+      },
+      protocol: "http:",
+    };
+    return new Promise((resolve, reject) => {
+      const req = http.request(meterOptions, (res) => {
+        let responseData = "";
 
-      res.on("data", (chunk) => {
-        responseData += chunk;
+        res.on("data", (chunk) => {
+          responseData += chunk;
+        });
+
+        res.on("end", () => {
+          resolve(responseData);
+        });
       });
 
-      res.on("end", () => {
-        resolve(responseData);
+      req.on("error", (e) => {
+        reportError(e);
+        //reject(`Problem with request: ${e.message}`);
       });
+      req.write(postMeterData);
+      req.end();
     });
-
-    req.on("error", (e) => {
-      reject(`Problem with request: ${e.message}`);
-    });
-    req.write(postMeterData);
-    req.end();
-  });
+  } catch (e) {
+    await reportError(e)
+    console.log("Error in getMetersValue",e);
+    throw new Error("Error in getMetersValue",e);
+  } 
 }
 const sleepALot = (ms = 60000) => new Promise((r) => setTimeout(r, ms));
 
@@ -183,6 +224,7 @@ async function readMeters() {
 
   function decodeFloat(registers) {
     if (registers.length !== 2) {
+      reportError("Invalid number of registers. Floating-point decoding requires exactly two 16-bit registers.");
       throw new Error(
         "Invalid number of registers. Floating-point decoding requires exactly two 16-bit registers."
       );
@@ -194,6 +236,7 @@ async function readMeters() {
 
   function decodeFloatL4(registers) {
     if (registers.length !== 4) {
+      reportError("Invalid number of registers. Floating-point decoding requires exactly four 16-bit registers.");
       throw new Error(
         "Invalid number of registers. Floating-point decoding requires exactly four 16-bit registers."
       );
@@ -216,9 +259,15 @@ async function readMeters() {
       // get value of all meters
       for (let meter of meters) {
         await sleep(50);
-        const activePowerData = await getMeterValue(meter.address);
-        const len2Data = await getMeterValueLen2(meter.address);
-        console.log("Len 2 data",len2Data);
+        let activePowerData;
+        let len2Data;
+        try{
+          activePowerData = await getMeterValue(meter.address);
+          len2Data = await getMeterValueLen2(meter.address);
+          console.log("Len 2 data",len2Data);
+        }catch (e) {
+          await reportError(e)
+        }
         volatageMeter.push({
           name: meter.name,
           value: activePowerData,
@@ -259,27 +308,50 @@ async function readMeters() {
         await sleep(100);
       }
     } catch (e) {
-      console.log(e);
+      await reportError(e)
+      console.log("Error in getMetersValue",e);
+      throw new Error("Error in getMetersValue",e);
     } finally {
       //TODO add post to server here
       console.log("Volatage meter",volatageMeter);
       return volatageMeter;
     }
-  };
-
+    };
   const getMeterValue = async (id) => {
+    console.log("getMeterValue id:", id);
     try {
       client.setID(id);
-      let val = await client.readInputRegisters(801, 4).then((res) => {
-        return modbusRegistersToDouble(res.data);
+      console.log("client.setID(id) id:", client.getID());
+      console.log("client open id: ", client.isOpen);
+      let val;
+      client.on('error', async (error) => {
+        await reportError(error);
+        console.error('Modbus error:', error);
+        throw new Error("Error in Modbus operation", error);
       });
+      try {
+        console.log("Checking if client ID can be reached...");
+        await client.readInputRegisters(801, 4); // Attempt to read a known register
+      } catch (e) {
+        console.error("Client ID cannot be reached:", e);
+        throw new Error("Client ID cannot be reached", e);
+      }
+      try {
+        const res = await client.readInputRegisters(801, 4); // Await the readInputRegisters call
+        console.log("readInputRegisters(801, 4) id:", id);
+        val = modbusRegistersToDouble(res.data);
+      } catch (e) {
+        throw new Error("Error in getMeterValue id is not found ", e);
+      }
       return val;
     } catch (e) {
-      return -1;
+      client.close();
+      throw new Error("Error in getMeterValue id is not found ", e);
     }
   };
 
   const getMeterValueLen2 = async (id) => {
+    console.log("getMeterValueLen2 with id:",id)
     const addresses = [1, 3, 5, 13, 15, 17, 25, 27, 29, 37, 39, 41, 65]; //all addresses for len2
     let allFoundAddressData = [];
     for (let address of addresses) {
@@ -289,7 +361,7 @@ async function readMeters() {
           allFoundAddressData.push(decodeFloat(res.data));
         });
       } catch (e) {
-        return -1;
+        throw new Error("Error in getMeterValueLen2 id is not found ",e);
       }
     }
     console.log("Len 2 Volt data", allFoundAddressData);
@@ -299,122 +371,138 @@ async function readMeters() {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   async function main() {
-    const header = [
-      "Meter Name",
-      "Active Energy",
-      "Voltage L1",
-      "Voltage L2",
-      "Voltage L3",
-      "Current L1",
-      "Current L2",
-      "Current L3",
-      "Active power L1",
-      "Active power L2",
-      "Active power L3",
-      "Power factor L1",
-      "Power factor L2",
-      "Power factor L3",
-      "Total active power",
-    ];
-    const totalPowerData = await getMetersValue(meterSettingsResponse);
-    console.log();
-    const names = totalPowerData.map((item) => item.name);
-    const values = totalPowerData.map((item) => item.value);
-    const combined = totalPowerData.map((item) => [
-      item.name,
-      item.value,
-      item.voltageL1,
-      item.voltageL2,
-      item.voltageL3,
-      item.currentL1,
-      item.currentL2,
-      item.currentL3,
-      item.activePowerL1,
-      item.activePowerL2,
-      item.activePowerL3,
-      item.powerFactorL1,
-      item.powerFactorL2,
-      item.powerFactorL3,
-      item.totActivePower,
-    ]);
-    combined.unshift(header);
-    meterSettingsResponse.forEach(async (meter) => {
-      meter.lastTimeRead=new Date();
-      meter.nextTimeRead=new Date(meter.lastTimeRead.getTime()+meter.timeGapRead);
-      console.log("meter.nextTimeRead",meter.nextTimeRead)
-      sleepTime=Math.abs(meter.nextTimeRead-new Date());
-      console.log("sleepTime",sleepTime);
-    })
-    console.log("Exel Date:", combined);
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet(combined);
-    XLSX.utils.book_append_sheet(workbook, worksheet, getTodaysDate());
-    XLSX.writeFile(workbook, "output.xlsx");
-    console.log("Excel file has been created successfully.");
+    try{
+      const header = [
+        "Meter Name",
+        "Active Energy",
+        "Voltage L1",
+        "Voltage L2",
+        "Voltage L3",
+        "Current L1",
+        "Current L2",
+        "Current L3",
+        "Active power L1",
+        "Active power L2",
+        "Active power L3",
+        "Power factor L1",
+        "Power factor L2",
+        "Power factor L3",
+        "Total active power",
+      ];
+      const totalPowerData = await getMetersValue(meterSettingsResponse);
+      console.log();
+      const names = totalPowerData.map((item) => item.name);
+      const values = totalPowerData.map((item) => item.value);
+      const combined = totalPowerData.map((item) => [
+        item.name,
+        item.value,
+        item.voltageL1,
+        item.voltageL2,
+        item.voltageL3,
+        item.currentL1,
+        item.currentL2,
+        item.currentL3,
+        item.activePowerL1,
+        item.activePowerL2,
+        item.activePowerL3,
+        item.powerFactorL1,
+        item.powerFactorL2,
+        item.powerFactorL3,
+        item.totActivePower,
+      ]);
+      combined.unshift(header);
+      meterSettingsResponse.forEach(async (meter) => {
+        meter.lastTimeRead=new Date();
+        meter.nextTimeRead=new Date(meter.lastTimeRead.getTime()+meter.timeGapRead);
+        console.log("meter.nextTimeRead",meter.nextTimeRead)
+        sleepTime=Math.abs(meter.nextTimeRead-new Date());
+        console.log("sleepTime",sleepTime);
+      })
+      console.log("Exel Date:", combined);
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet(combined);
+      XLSX.utils.book_append_sheet(workbook, worksheet, getTodaysDate());
+      XLSX.writeFile(workbook, "output.xlsx");
+      console.log("Excel file has been created successfully.");
+    }catch(e){
+      reportError(e)
+      throw new Error("Error in first read ",e);
+    }
   }
   
   async function readMeters(meter) {
-    console.log("Read meters for meter in th read meter function duh",meter.name);
-    const header = [
-      "Meter Name",
-      "Active Energy",
-      "Voltage L1",
-      "Voltage L2",
-      "Voltage L3",
-      "Current L1",
-      "Current L2",
-      "Current L3",
-      "Active power L1",
-      "Active power L2",
-      "Active power L3",
-      "Power factor L1",
-      "Power factor L2",
-      "Power factor L3",
-      "Total active power",
-    ];
-    const totalPowerData = await getMetersValue([meter]);
-    console.log("totalPowerData",totalPowerData);
-    const names = totalPowerData.map((item) => item.name);
-    const values = totalPowerData.map((item) => item.value);
-    const combined = totalPowerData.map((item) => [
-      item.name,
-      item.value,
-      item.voltageL1,
-      item.voltageL2,
-      item.voltageL3,
-      item.currentL1,
-      item.currentL2,
-      item.currentL3,
-      item.activePowerL1,
-      item.activePowerL2,
-      item.activePowerL3,
-      item.powerFactorL1,
-      item.powerFactorL2,
-      item.powerFactorL3,
-      item.totActivePower,
-    ]);
-    combined.unshift(header);
+    try{
+      console.log("Read meters for meter in th read meter function duh",meter.name);
+      const header = [
+        "Meter Name",
+        "Active Energy",
+        "Voltage L1",
+        "Voltage L2",
+        "Voltage L3",
+        "Current L1",
+        "Current L2",
+        "Current L3",
+        "Active power L1",
+        "Active power L2",
+        "Active power L3",
+        "Power factor L1",
+        "Power factor L2",
+        "Power factor L3",
+        "Total active power",
+      ];
+      const totalPowerData = await getMetersValue([meter]);
+      console.log("totalPowerData",totalPowerData);
+      const names = totalPowerData.map((item) => item.name);
+      const values = totalPowerData.map((item) => item.value);
+      const combined = totalPowerData.map((item) => [
+        item.name,
+        item.value,
+        item.voltageL1,
+        item.voltageL2,
+        item.voltageL3,
+        item.currentL1,
+        item.currentL2,
+        item.currentL3,
+        item.activePowerL1,
+        item.activePowerL2,
+        item.activePowerL3,
+        item.powerFactorL1,
+        item.powerFactorL2,
+        item.powerFactorL3,
+        item.totActivePower,
+      ]);
+      combined.unshift(header);
 
-    console.log("Exel Date:", combined);
-    meter.lastTimeRead=new Date();
-    meter.nextTimeRead=new Date(meter.lastTimeRead.getTime()+meter.timeGapRead-10);
-    console.log("mater name: ",meter.name);
-    console.log("meter.nextTimeRead",meter.nextTimeRead);
+      console.log("Exel Date:", combined);
+      meter.lastTimeRead=new Date();
+      meter.nextTimeRead=new Date(meter.lastTimeRead.getTime()+meter.timeGapRead-10);
+      console.log("mater name: ",meter.name);
+      console.log("meter.nextTimeRead",meter.nextTimeRead);
+    }catch(e){
+      reportError(e)
+      console.error("Error in readMeters",e);
+      throw new Error("Error in first read ",e);
+    }
   }
-  if(firstRun){
-    await main();
-    firstRun=false;
-  }else{
-    for(let meter of meterSettingsResponse){
-      console.log("Meter anme", meter.name);
-      console.log("meter.nextTimeRead in the for each", meter.nextTimeRead);
-      console.log("Date new in the for each", new Date());
-      console.log("Data check", meter.nextTimeRead <= new Date());
-      if (meter.nextTimeRead <= new Date()) {
-        console.log("Metter to read", [meter]);
-        await readMeters(meter);
+  try{
+    if(firstRun){
+      await main();
+      firstRun=false;
+    }else{
+      for(let meter of meterSettingsResponse){
+        console.log("Meter anme", meter.name);
+        console.log("meter.nextTimeRead in the for each", meter.nextTimeRead);
+        console.log("Date new in the for each", new Date());
+        console.log("Data check", meter.nextTimeRead <= new Date());
+        if (meter.nextTimeRead <= new Date()) {
+          console.log("Metter to read", [meter]);
+          await readMeters(meter);
+        }
       }
     }
+  }catch(e){
+    await reportError(e)
+    throw new Error("When readind meter",e);
   }
 }
 let sleepTime=0;
@@ -426,8 +514,23 @@ async function checkNexRead(nextreadTime){
 }
 let firstRun=true;
 
+async function comInit() {
+  try {
+    await client.connectRTUBuffered("COM3", { baudRate: 9600 }); // Added await here
+    client.setID(1);
+    client.on('error', async (error) => { // Added async here
+      await reportError(error); // Added await here
+      console.error('Modbus error:', error);
+      throw new Error("Error in getMeterValue id is not found ", error);
+    });
+  } catch (e) {
+    await reportError(e);
+    throw new Error("Error in comInit", e);
+  }
+}
+
 await login();
+await comInit();
 await setMitterSettings();
 await welcome();
-//await setMitterSettings();
 await mainScreen();
