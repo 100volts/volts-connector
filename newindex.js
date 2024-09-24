@@ -262,8 +262,9 @@ async function readMeters() {
         let activePowerData;
         let len2Data;
         try{
-          activePowerData = await getMeterValue(meter.address);
-          len2Data = await getMeterValueLen2(meter.address);
+          const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 10000)); // 5 seconds timeout
+          activePowerData = await Promise.race([getMeterValue(meter.address), timeout]);
+          len2Data = await Promise.race([getMeterValueLen2(meter.address), timeout]);
           console.log("Len 2 data",len2Data);
         }catch (e) {
           await reportError(e)
