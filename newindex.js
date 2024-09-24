@@ -106,14 +106,12 @@ async function mainScreen() {
   }catch(e){
     console.error("Error in mainScreen",e);
     await reportError(e);
-    await login();
-    await setMitterSettings();
-    await welcome();
     await mainScreen();
   }
   console.log("Minsleep time",sleepTime);
   await sleep(sleepTime);
   await login();
+  await setMitterSettings();
   await mainScreen();
 }
 
