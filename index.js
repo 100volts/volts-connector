@@ -124,14 +124,15 @@ async function mainMenu() {
       message: "Select an option",
       choices: [
         {
-          name: 'Read single time',
+          name: 'Read meter',
           value: '0',
-          description: 'Reads only one time',
+          description: 'Reads the elctric meter as per settings',
         },
         {
           name: 'Settings',
           value: '1',
           description: 'All settings for the controller',
+          disabled: true,
         },
         {
           name: 'Read 15 min load',
@@ -141,6 +142,7 @@ async function mainMenu() {
         {
           name: 'Escape',
           value: '9',
+          disabled: true,
         },
       ],
     });
@@ -334,7 +336,7 @@ async function readMeters() {
     const year = today.getFullYear();
 
     const formattedDate = `${day}-${month}-${year}`;
-    console.log(formattedDate);
+    console.log("Current worksheet date:", formattedDate);
     return formattedDate;
   }
 
@@ -475,7 +477,10 @@ async function readMeters() {
       { id: 6, name: "Priemno-6" },
       { id: 7, name: "Trafo#1-7" },
     ];
+    
     const header = [
+      "Date",
+      "Time",
       "Meter Name",
       "Active Energy",
       "Voltage L1",
@@ -492,11 +497,18 @@ async function readMeters() {
       "Power factor L3",
       "Total active power",
     ];
+
     const totalPowerData = await getMetersValue(dataPrep);
-    console.log();
-    const names = totalPowerData.map((item) => item.name);
-    const values = totalPowerData.map((item) => item.value);
+    
+    // Get current date and time
+    const now = new Date();
+    const date = now.toLocaleDateString();
+    const time = now.toLocaleTimeString();
+
+    // Add date and time to each row
     const combined = totalPowerData.map((item) => [
+      date,
+      time,
       item.name,
       item.value,
       item.voltageL1,
@@ -513,15 +525,43 @@ async function readMeters() {
       item.powerFactorL3,
       item.totActivePower,
     ]);
-    combined.unshift(header);
 
-    console.log("Exel Date:", combined);
+    let workbook;
+    let worksheet;
+    const todaySheet = getTodaysDate();
 
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet(combined);
-    XLSX.utils.book_append_sheet(workbook, worksheet, getTodaysDate());
+    // Try to read existing file
+    try {
+      workbook = XLSX.readFile('output.xlsx');
+      worksheet = workbook.Sheets[todaySheet];
+      
+      if (!worksheet) {
+        // If sheet for today doesn't exist, create new one with header
+        console.log(`Creating new worksheet for ${todaySheet}`);
+        worksheet = XLSX.utils.aoa_to_sheet([header]);
+        XLSX.utils.book_append_sheet(workbook, worksheet, todaySheet);
+      } else {
+        console.log(`Appending to existing worksheet for ${todaySheet}`);
+        // Get the current number of rows
+        const range = XLSX.utils.decode_range(worksheet['!ref']);
+        const startRow = range.e.r + 1;
+
+        // Append new rows to existing worksheet
+        combined.forEach((row, index) => {
+          XLSX.utils.sheet_add_aoa(worksheet, [row], { origin: startRow + index });
+        });
+      }
+    } catch (error) {
+      // If file doesn't exist, create new workbook and worksheet
+      console.log("Creating new Excel file with first worksheet");
+      workbook = XLSX.utils.book_new();
+      worksheet = XLSX.utils.aoa_to_sheet([header]);
+      XLSX.utils.book_append_sheet(workbook, worksheet, todaySheet);
+    }
+
+    // Write to file
     XLSX.writeFile(workbook, "output.xlsx");
-    console.log("Excel file has been created successfully.");
+    console.log(`Excel file updated. Added ${combined.length} rows to worksheet ${todaySheet}`);
   }
 
   main();
