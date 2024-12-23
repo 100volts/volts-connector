@@ -469,13 +469,16 @@ async function readMeters() {
 
   async function main() {
     const dataPrep = [
-      { id: 1, name: "GRT-1" },
-      { id: 2, name: "Ampak-2" },
-      { id: 3, name: "Ledena Voda-3" },
-      { id: 4, name: "Hladilnici-4" },
-      { id: 5, name: "Kompresorno-5" },
-      { id: 6, name: "Priemno-6" },
+      { id: 1, name: "TBA-8" },
+      { id: 2, name: "Ampak" },
+      { id: 3, name: "Ledena Voda" },
+      { id: 4, name: "Hladilnici" },
+      { id: 5, name: "Kompresorno" },
+      { id: 6, name: "Priemno" },
       { id: 7, name: "Trafo#1-7" },
+      { id: 8, name: "HOMO UHT" },
+      { id: 9, name: "Priem KM" },
+      { id: 10, name: "Priem UHT" },
     ];
     
     const header = [
@@ -540,6 +543,9 @@ async function readMeters() {
         console.log(`Creating new worksheet for ${todaySheet}`);
         worksheet = XLSX.utils.aoa_to_sheet([header]);
         XLSX.utils.book_append_sheet(workbook, worksheet, todaySheet);
+        
+        // Add the first data rows after header
+        XLSX.utils.sheet_add_aoa(worksheet, combined, { origin: 1 });
       } else {
         console.log(`Appending to existing worksheet for ${todaySheet}`);
         // Get the current number of rows
@@ -547,9 +553,7 @@ async function readMeters() {
         const startRow = range.e.r + 1;
 
         // Append new rows to existing worksheet
-        combined.forEach((row, index) => {
-          XLSX.utils.sheet_add_aoa(worksheet, [row], { origin: startRow + index });
-        });
+        XLSX.utils.sheet_add_aoa(worksheet, combined, { origin: startRow });
       }
     } catch (error) {
       // If file doesn't exist, create new workbook and worksheet
@@ -557,6 +561,9 @@ async function readMeters() {
       workbook = XLSX.utils.book_new();
       worksheet = XLSX.utils.aoa_to_sheet([header]);
       XLSX.utils.book_append_sheet(workbook, worksheet, todaySheet);
+      
+      // Add the first data rows after header
+      XLSX.utils.sheet_add_aoa(worksheet, combined, { origin: 1 });
     }
 
     // Write to file
