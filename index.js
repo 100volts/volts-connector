@@ -11,21 +11,58 @@ import https from "https";
 import readline from "readline";
 import ModbusRTU from "modbus-serial";
 import XLSX from "xlsx";
+import fs from 'fs';
 
+let errorFlagCom=true;
+let welcomeFlag=true;
+const config = await loadConfig();
 //global variable for key & port
 let key;
-let port;
+const { port, baudRate } = config;
 
-const client = new ModbusRTU();
-client.connectRTUBuffered("COM3", { baudRate: 9600 });
-client.setID(1);
+let client = new ModbusRTU();
+
 //helper function
 const sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
 //const sleepALot = (ms = 120000) => new Promise((r) => setTimeout(r, ms));//this is 2 mins
 
 const sleepALot = (ms = 60000) => new Promise((r) => setTimeout(r, ms));
 
+function loadConfig() {
+  return new Promise((resolve, reject) => {
+    fs.readFile('config.json', 'utf8', (err, data) => {
+      if (err) {
+        reject(`Error reading config file: ${err.message}`);
+      } else {
+        resolve(JSON.parse(data)); // Parse JSON data
+      }
+    });
+  });
+}
+
+async function initCOM(){
+  try {
+      await client.connectRTUBuffered(port, { baudRate: baudRate });
+      client.setID(1);
+      errorFlagCom = true;
+  } catch (error) {
+      console.error(`Cannot initialize connection. Please plug in the USB connection to port ${port}. Error:`, error);
+      await inputErrorHandling()
+      errorFlagCom = false;
+  }
+}
+
+async function inputErrorHandling() {
+  process.on("uncaughtException", async (err) => {
+    console.clear()
+    errorFlagCom=false;
+    console.error(`Cannot initialize connection. Please plug in the USB connection to port ${port}. Error:`);
+  });
+  process.clear
+}
+
 async function welcome() {
+  if(errorFlagCom){
   const title = chalkAnimation.neon("Volts-Connector \n");
   await sleep();
   title.stop();
@@ -33,6 +70,9 @@ async function welcome() {
     ${chalk.bgBlue("Welcome to the controller")}
     The application need to run indefinatly for all meters to be read
         `);
+  }
+  await sleep();
+  console.clear();
 }
 
 async function askForKey() {
@@ -49,16 +89,72 @@ async function askForKey() {
 }
 
 async function askForPort() {
-  const portInput = await inquirer.prompt({
-    name: "connector_port",
-    type: "input",
-    message: "What is the connector port?",
-    default() {
-      return "TtyS0";
-    },
-  });
-  port = portInput.connector_port;
-  console.log(port);
+  try{
+    const portInput = await inquirer.prompt({
+      name: "connector_port",
+      type: "list", // This creates a selection menu
+      message: "What is the connector port?",
+      choices: ["COM1", "COM2", "COM3", "TtyS0", "TtyS1"], // Predefined options
+      default() {
+        return "TtyS0"; // Default selection
+      },
+    });s
+    port = portInput.connector_port;
+    console.log(port);
+  }catch (err) {
+    console.error('Connection error:', err.message);
+  }
+}
+
+async function mainMenu() {
+  if(errorFlagCom){
+    const msg = "Volts-Controller";
+      console.log(gradient.retro.multiline(msg));
+
+    console.log("")
+    const optionSelected = await inquirer.prompt({
+      name: "option",  // Changed from company_key to option
+      type: "list",
+      message: "Select an option",
+      choices: [
+        {
+          name: 'Read single time',
+          value: '0',
+          description: 'Reads only one time',
+        },
+        {
+          name: 'Settings',
+          value: '1',
+          description: 'All settings for the controller',
+        },
+        {
+          name: 'Read 15 min load',
+          value: '2',
+          disabled: true,
+        },
+        {
+          name: 'Escape',
+          value: '9',
+        },
+      ],
+    });
+
+    // Handle the selected option
+    switch(optionSelected.option) {
+      case '0':
+        await mainScreen();
+        break;
+      case '1':
+        // Add settings logic here
+        console.log('Settings selected');
+        break;
+      case '9':
+        console.log('Exiting menu...');
+        break;
+      default:
+        console.log('Invalid option');
+    }
+  }
 }
 
 const postData = JSON.stringify({
@@ -97,7 +193,8 @@ async function sendPostRequest() {
     });
 
     req.on("error", (e) => {
-      reject(`Problem with request: ${e.message}`);
+      //reject(`Problem with request: ${e.message}`);
+      console.log(`Problem with request: ${e.message}`)
     });
 
     req.write(postData);
@@ -144,19 +241,47 @@ async function postElMeterData() {
 }
 
 async function mainScreen() {
-  console.clear();
-  const msg = "Working";
+  if(errorFlagCom){
+    console.clear();
+    try {
+      const msg = "Reading meter";
+      figlet(msg, (err, data) => {
+        if (err) throw new Error("Figlet error: " + err.message);
+        console.log(gradient.pastel.multiline(data));
+      });
 
-  figlet(msg, (err, data) => {
-    console.log(gradient.pastel.multiline(data));
-  });
-  await postElMeterData();
-  const jsonObject = JSON.parse(reqdata);
-  console.log("Tokken: ", jsonObject["access_token"]);
-  accesToken = jsonObject["access_token"];
-  await readMeters();
-  await sleepALot();
-  await mainScreen();
+      // Add key listener for exit
+      console.log("\nPress 'q' to return to main menu...");
+      readline.emitKeypressEvents(process.stdin);
+      process.stdin.setRawMode(true);
+
+      process.stdin.on('keypress', (str, key) => {
+        if (key.name === 'q') {
+          console.log('\nReturning to main menu...');
+          process.stdin.setRawMode(false);
+          process.stdin.removeAllListeners('keypress');
+          mainMenu();
+          return;
+        }
+      });
+
+      // Continue with normal operation
+      await postElMeterData();
+      const jsonObject = JSON.parse(reqdata);
+      console.log("Token:", jsonObject["access_token"]);
+      accesToken = jsonObject["access_token"];
+
+      await readMeters();
+      await sleepALot();
+      await mainScreen();
+
+    } catch (err) {
+      console.error("Error in mainScreen:", err);
+      console.log("Returning to main screen...");
+      await sleep(1000);
+      mainScreen();
+    }
+  }
 }
 
 async function readMeters() {
@@ -262,7 +387,7 @@ async function readMeters() {
         await sleep(100);
       }
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     } finally {
       //TODO add post to server here
       return volatageMeter;
@@ -362,7 +487,24 @@ async function readMeters() {
   main();
 }
 
-await welcome();
-//await askForKey();
-//await askForPort();
-await mainScreen();
+async function app(){
+  await sleep();
+  if(welcomeFlag){
+      await welcome();
+      welcomeFlag = false; // Only show welcome once
+  }
+  await sleep();
+  if (!client.isOpen) {
+      console.log("Initializing COM connection...");
+      await initCOM();
+      await sleep();
+  }
+  await sleep();
+  if(errorFlagCom){
+      await mainMenu();
+  } else {  
+      console.log("Connection lost, requesting port...");
+      await askForPort();
+  }
+}
+await app();
