@@ -21,6 +21,7 @@ let key;
 const { port, baudRate,readTime } = config;
 
 let client = new ModbusRTU();
+let brRefreshes=0;
 
 //helper function
 const sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
@@ -176,7 +177,7 @@ const options = {
     "Content-Length": Buffer.byteLength(postData),
   },
 };
-
+let errFlag=false;
 let reqdata;
 let accesToken;
 async function sendPostRequest() {
@@ -192,18 +193,28 @@ async function sendPostRequest() {
         try {
           resolve(data);
         } catch (err) {
-          reject(err);
+          resolve("");
         }
       });
     });
-
-    req.on("error", (e) => {
-      //reject(`Problem with request: ${e.message}`);
-      console.log(`Problem with request: ${e.message}`)
-      mainScreen();
+    
+    req.setTimeout(5000, () => {
+      console.log("Request timed out");
+      errFlag = true;
+      req.destroy();
+      resolve("");
     });
 
-    req.write(postData);
+    req.on("error", (e) => {
+      console.log(`Problem with request get auth: ${e.message}`);
+      errFlag = true;
+      resolve("");
+      req.destroy();
+    });
+
+    if(!errFlag) {
+      req.write(postData);
+    }
     req.end();
   });
 }
@@ -235,7 +246,7 @@ async function sendMerterDataRequestPost(postMeterData) {
     });
 
     req.on("error", (e) => {
-      reject(`Problem with request: ${e.message}`);
+      reject(`Problem with request sed meter data: ${e.message}`);
     });
     req.write(postMeterData);
     req.end();
@@ -245,8 +256,9 @@ async function sendMerterDataRequestPost(postMeterData) {
 async function postElMeterData() {
   await sendPostRequest().then((data) => (reqdata = data));
 }
-
+let flagSendDataToServer=true;
 async function mainScreen() {
+  brRefreshes=brRefreshes+1;
   if(errorFlagCom){
     console.clear();
     try {
@@ -258,9 +270,10 @@ async function mainScreen() {
 
       // Add key listener for exit
       console.log("\nPress 'q' to return to main menu...");
+      console.log("brRefreshes",brRefreshes)
       readline.emitKeypressEvents(process.stdin);
       process.stdin.setRawMode(true);
-
+      flagSendDataToServer=true;
       // Set up timer for 1 hour (3600000 milliseconds)
       const timer = setTimeout(() => {
         console.log('\nOne hour passed, returning to main menu...');
@@ -280,13 +293,20 @@ async function mainScreen() {
           return;
         }
       });
-
+      try{
       // Continue with normal operation
       await postElMeterData();
-      const jsonObject = JSON.parse(reqdata);
-      console.log("Token:", jsonObject["access_token"]);
-      accesToken = jsonObject["access_token"];
-
+      if (reqdata) {
+        const jsonObject = JSON.parse(reqdata);
+        console.log("Token:", jsonObject["access_token"]);
+        accesToken = jsonObject["access_token"];
+      } else {
+        console.log("No data received from server");
+        errFlag = true;
+      }
+      }catch(e){
+        flagSendDataToServer=false;
+      }
       await readMeters();
       //await sleepALot();
       //await mainScreen();
@@ -402,11 +422,12 @@ async function readMeters() {
           totalActiveEnergyImportTariff2: 0,
         });
         await sleep(100);
+        if(!errFlag){
         await sendMerterDataRequestPost(postMeterData);
-        await sleep(100);
+        }await sleep(100);
       }
     } catch (e) {
-      //console.log(e);
+      console.log(e);
     } finally {
       //TODO add post to server here
       return volatageMeter;
