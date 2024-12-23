@@ -18,7 +18,7 @@ let welcomeFlag=true;
 const config = await loadConfig();
 //global variable for key & port
 let key;
-const { port, baudRate } = config;
+const { port, baudRate,readTime } = config;
 
 let client = new ModbusRTU();
 
@@ -107,6 +107,11 @@ async function askForPort() {
 }
 
 async function mainMenu() {
+  if (!client.isOpen) {
+    console.log("Initializing COM connection...");
+    await initCOM();
+    await sleep();
+  }
   if(errorFlagCom){
     const msg = "Volts-Controller";
       console.log(gradient.retro.multiline(msg));
@@ -195,6 +200,7 @@ async function sendPostRequest() {
     req.on("error", (e) => {
       //reject(`Problem with request: ${e.message}`);
       console.log(`Problem with request: ${e.message}`)
+      mainScreen();
     });
 
     req.write(postData);
@@ -255,8 +261,18 @@ async function mainScreen() {
       readline.emitKeypressEvents(process.stdin);
       process.stdin.setRawMode(true);
 
+      // Set up timer for 1 hour (3600000 milliseconds)
+      const timer = setTimeout(() => {
+        console.log('\nOne hour passed, returning to main menu...');
+        process.stdin.setRawMode(false);
+        process.stdin.removeAllListeners('keypress');
+        mainScreen();
+        return;
+      }, readTime);
+
       process.stdin.on('keypress', (str, key) => {
         if (key.name === 'q') {
+          clearTimeout(timer); // Clear the timer when 'q' is pressed
           console.log('\nReturning to main menu...');
           process.stdin.setRawMode(false);
           process.stdin.removeAllListeners('keypress');
@@ -272,14 +288,17 @@ async function mainScreen() {
       accesToken = jsonObject["access_token"];
 
       await readMeters();
-      await sleepALot();
-      await mainScreen();
-
+      //await sleepALot();
+      //await mainScreen();
+      //await mainMenu();
     } catch (err) {
       console.error("Error in mainScreen:", err);
       console.log("Returning to main screen...");
       await sleep(1000);
-      mainScreen();
+
+      //mainMenu();
+    } finally{
+      await mainMenu();
     }
   }
 }
@@ -492,12 +511,6 @@ async function app(){
   if(welcomeFlag){
       await welcome();
       welcomeFlag = false; // Only show welcome once
-  }
-  await sleep();
-  if (!client.isOpen) {
-      console.log("Initializing COM connection...");
-      await initCOM();
-      await sleep();
   }
   await sleep();
   if(errorFlagCom){

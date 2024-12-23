@@ -1,5 +1,6 @@
 {
     "port": "COM3",
-    "baudRate": 9600
+    "baudRate": 9600,
+    "readTime":120000
   }
   
