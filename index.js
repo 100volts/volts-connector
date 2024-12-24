@@ -108,6 +108,7 @@ async function askForPort() {
 }
 
 async function mainMenu() {
+  //testing for client
   if (!client.isOpen) {
     console.log("Initializing COM connection...");
     await initCOM();
@@ -183,6 +184,7 @@ let errFlag=false;
 let reqdata;
 let accesToken;
 async function sendPostRequest() {
+  errFlag=false;
   return new Promise((resolve, reject) => {
     const req = http.request(options, (res) => {
       let data = "";
@@ -296,16 +298,16 @@ async function mainScreen() {
         }
       });
       try{
-      // Continue with normal operation
-      await postElMeterData();
-      if (reqdata) {
-        const jsonObject = JSON.parse(reqdata);
-        console.log("Token:", jsonObject["access_token"]);
-        accesToken = jsonObject["access_token"];
-      } else {
-        console.log("No data received from server");
-        errFlag = true;
-      }
+        // Continue with normal operation
+        await postElMeterData();
+        if (reqdata) {
+          const jsonObject = JSON.parse(reqdata);
+          console.log("Token:", jsonObject["access_token"]);
+          accesToken = jsonObject["access_token"];
+        } else {
+          console.log("No data received from server");
+          errFlag = true;
+        }
       }catch(e){
         flagSendDataToServer=false;
       }
