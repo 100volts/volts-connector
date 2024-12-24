@@ -626,7 +626,7 @@ function writeToJsonFile(newData) {
 
       // Add new data to array
       dataArray.push(newData);
-      console.log("newData",dataArray)
+      //console.log("newData",dataArray)
       // Write the updated array back to file
       const jsonData = JSON.stringify(dataArray, null,2);
       
