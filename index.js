@@ -405,8 +405,10 @@ async function readMeters() {
           powerFactorL3: len2Data[11],
           totActivePower: len2Data[12],
         });
+        const now = new Date();
         const postMeterData = JSON.stringify({
           merterId: meter.id,
+          timestamp: now.toISOString(), // Local time: "15:30:00"
           voltagell1: len2Data[0].toFixed(2),
           voltagell2: len2Data[1].toFixed(2),
           voltagell3: len2Data[2].toFixed(2),
@@ -425,12 +427,16 @@ async function readMeters() {
         });
         await sleep(100);
         if(!errFlag){
-        await sendMerterDataRequestPost(postMeterData);
-        const fileData=await readAndFormatJsonData()
-        console.log("back up file data",fileData)
-        if(fileData){
-
-        }
+          await sendMerterDataRequestPost(postMeterData);
+          const fileData=await readAndFormatJsonData()
+          //console.log("back up file data",fileData)
+         if(fileData){
+          for (const fD of fileData) {
+            console.log("JSON.stringify(fD)",JSON.stringify(fD))
+            await sendMerterDataRequestPost(JSON.stringify(fD));
+          }
+          clearStoredData();
+          }
         }else{
           writeToJsonFile(postMeterData);
         }
@@ -690,6 +696,30 @@ function readAndFormatJsonData() {
       }
     });
   });
+}
+
+function clearJsonFile() {
+  return new Promise((resolve, reject) => {
+    // Write an empty array to the file
+    fs.writeFile('data.json', '[]', 'utf8', (err) => {
+      if (err) {
+        console.error('Error clearing JSON file:', err);
+        reject(err);
+        return;
+      }
+      console.log('Successfully cleared data.json');
+      resolve();
+    });
+  });
+}
+
+async function clearStoredData() {
+  try {
+    await clearJsonFile();
+    console.log('All stored meter readings have been cleared');
+  } catch (err) {
+    console.error('Failed to clear stored data:', err);
+  }
 }
 
 await app();
