@@ -426,7 +426,15 @@ async function readMeters() {
         await sleep(100);
         if(!errFlag){
         await sendMerterDataRequestPost(postMeterData);
-        }await sleep(100);
+        const fileData=await readAndFormatJsonData()
+        console.log("back up file data",fileData)
+        if(fileData){
+
+        }
+        }else{
+          writeToJsonFile(postMeterData);
+        }
+        await sleep(100);
       }
     } catch (e) {
       console.log(e);
@@ -588,4 +596,100 @@ async function app(){
       await askForPort();
   }
 }
+
+function writeToJsonFile(newData) {
+  return new Promise((resolve, reject) => {
+    // First, try to read existing data
+    fs.readFile('data.json', 'utf8', (readErr, existingData) => {
+      let dataArray = [];
+      
+      // If file exists, parse its content
+      if (!readErr) {
+        try {
+          dataArray = JSON.parse(existingData);
+          if (!Array.isArray(dataArray)) {
+            dataArray = [dataArray]; // Convert to array if it's a single object
+          }
+        } catch (parseErr) {
+          console.error('Error parsing existing JSON:', parseErr);
+          dataArray = []; // Start fresh if parsing fails
+        }
+      }
+
+      // Add new data to array
+      dataArray.push(newData);
+      console.log("newData",dataArray)
+      // Write the updated array back to file
+      const jsonData = JSON.stringify(dataArray, null,2);
+      
+      fs.writeFile('data.json', jsonData, 'utf8', (writeErr) => {
+        if (writeErr) {
+          console.error('Error writing to JSON file:', writeErr);
+          reject(writeErr);
+          return;
+        }
+        console.log('Data successfully appended to JSON file');
+        console.log('Total records:', dataArray.length);
+        resolve();
+      });
+    });
+  });
+}
+
+// Function to read all saved data and format it
+function readAndFormatJsonData() {
+  return new Promise((resolve, reject) => {
+    fs.readFile('data.json', 'utf8', (err, data) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          console.log('No saved data found');
+          resolve([]);
+          return;
+        }
+        console.error('Error reading JSON file:', err);
+        reject(err);
+        return;
+      }
+
+      try {
+        // Parse the outer array
+        const jsonStringsArray = JSON.parse(data);
+        
+        // Parse each string in the array into an object
+        const formattedDataArray = jsonStringsArray.map(jsonString => {
+          const jsonData = JSON.parse(jsonString);
+          return {
+            merterId: jsonData.merterId,
+            voltagell1: jsonData.voltagell1,
+            voltagell2: jsonData.voltagell2,
+            voltagell3: jsonData.voltagell3,
+            currentl1: jsonData.currentl1,
+            currentl2: jsonData.currentl2,
+            currentl3: jsonData.currentl3,
+            activepowerl1: jsonData.activepowerl1,
+            activepowerl2: jsonData.activepowerl2,
+            activepowerl3: jsonData.activepowerl3,
+            pfl1: jsonData.pfl1,
+            pfl2: jsonData.pfl2,
+            pfl3: jsonData.pfl3,
+            totalActivePpower: jsonData.totalActivePpower,
+            totalActiveEnergyImportTariff1: jsonData.totalActiveEnergyImportTariff1,
+            totalActiveEnergyImportTariff2: jsonData.totalActiveEnergyImportTariff2
+          };
+        });
+
+        console.log(`Successfully parsed ${formattedDataArray.length} meter readings`);
+        if (formattedDataArray.length > 0) {
+          console.log('Sample reading:', formattedDataArray[0]);
+        }
+
+        resolve(formattedDataArray);
+      } catch (parseErr) {
+        console.error('Error parsing JSON data:', parseErr);
+        reject(parseErr);
+      }
+    });
+  });
+}
+
 await app();
