@@ -1,7 +1,6 @@
 import { LoginResponse } from "./domain/LoginResponse"; // adjust path if needed
 
 let accessToken;
-const urlAddress="localhost"
 
 const loginData = JSON.stringify({
     email: "plamen@mail.com",
@@ -10,7 +9,7 @@ const loginData = JSON.stringify({
 
 
 
-export async function login(): Promise<string> {
+export async function login(urlAddress: string): Promise<string> {
   const response = await fetch(`http://${urlAddress}:8081/api/vi/auth/authenticate`, {
       method: "POST",
       headers: {
