@@ -12,14 +12,21 @@ async function app() {
   try {
     const configData: ConfigData = await loadConfig();
     console.log("Config data: ", configData);
-    const token = await login(configData.hostname); // wait for login and get the token
-    console.log("Token received in index.ts:", token);
+    //const token = await login(configData.hostname); // wait for login and get the token
+    //console.log("Token received in index.ts:", token);
     //console.log("Read data:", ReadMeters())
-    postMeterData(await ReadMeters(), "localhost", token);
+    //postMeterData(await ReadMeters(), "localhost", token);
+    let meterData = await ReadMeters();
+    displayData(meterData);
     console.log("data sent");
   } catch (err) {
     console.error("Login failed:", err);
   }
+}
+
+async function displayData(meterData: any) {
+  console.log("Displaying data");
+  console.table(meterData);
 }
 
 async function app2() {
