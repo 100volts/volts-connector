@@ -5,19 +5,22 @@ import { loadConfig } from "./config/LoadConfigData";
 import { ConfigData } from "./domain/ConfigData";
 import ReadMeters from "./modbus/ReadMeters";
 import postMeterData from "./SendMeterData";
+import { TimeSheet } from "./domain/TimeSheet"
 //import chalk from "chalk";
 
 async function app() {
   console.log("Hello, app is running");
   try {
-    const configData: ConfigData = await loadConfig();
+    const configData: ConfigData = await loadConfig<ConfigData>('config.json');
+    const timeSheet: TimeSheet = await loadConfig<TimeSheet>('timeSheet.json');
     console.log("Config data: ", configData);
     //const token = await login(configData.hostname); // wait for login and get the token
     //console.log("Token received in index.ts:", token);
     //console.log("Read data:", ReadMeters())
     //postMeterData(await ReadMeters(), "localhost", token);
-    let meterData = await ReadMeters();
-    displayData(meterData);
+    //let meterData = await ReadMeters();
+    //displayData(meterData);
+    intitTimeTable(configData,timeSheet)
     console.log("data sent");
   } catch (err) {
     console.error("Login failed:", err);
@@ -29,90 +32,57 @@ async function displayData(meterData: any) {
   console.table(meterData);
 }
 
-async function app2() {
-  console.log("Hello, app is running");
-  try {
-    const configData: ConfigData = await loadConfig();
-    console.log("Config data: ", configData);
-    const token = await login(configData.hostname); // wait for login and get the token
-    console.log("Token received in index.ts:", token);
+async function readMeterInstructions(config: ConfigData){
+  const token = await login(config.hostname);
+  let meterData = await ReadMeters();
+  await postMeterData(meterData, "localhost", token);
+  await displayData(meterData)
+}
 
-    // Function to send meter data
-    const sendMeterData = async () => {
-      try {
-        const meterData = await ReadMeters();
-        await postMeterData(meterData, "localhost", token);
-        console
-          .log
-          //chalk.green("Data sent at"),
-          //chalk.yellow(new Date().toLocaleTimeString())
-          ();
+function intitTimeTable(config: ConfigData, timeSheet: TimeSheet){
+  timeSheet.readElMeterTimeTable.forEach((entry, index) => {
+    const hour = parseInt(entry.hower, 10);
+    const minute = parseInt(entry.minits, 10);
+  
+    if (isNaN(hour) || isNaN(minute)) {
+      console.error(`Invalid time in timetable entry ${index}:`, entry);
+      return;
+    }
+  
+    scheduleDailyTask(hour, minute, () => {
+      console.log(
+        `Running scheduled task from timetable entry ${index} at ${hour}:${minute
+          .toString()
+          .padStart(2, "0")}`
+      );
+      //displayData(config)
+    });
+  });
+}
 
-        // Display as a table
-        /*console.log(chalk.blue.bold("\nLast meter data:"));
-        console.log(
-          chalk.bold(
-            `${"ID".padEnd(5)}${"Name".padEnd(
-              20
-            )}${"Active Import".padEnd(
-              15
-            )}${"Active Export".padEnd(
-              15
-            )}${"Reactive Import".padEnd(
-              17
-            )}${"Reactive Export".padEnd(
-              17
-            )}${"Apparent".padEnd(10)}${"Recorded At"}`
-          )
-        );
-        meterData.forEach((meter: any) => {
-          console.log(
-            `${chalk.cyan(
-              meter.meterId.toString().padEnd(5)
-            )}` +
-              `${chalk.magenta(meter.name.padEnd(20))}` +
-              `${chalk.green(
-                meter.energyActiveImport
-                  .toFixed(2)
-                  .padEnd(15)
-              )}` +
-              `${chalk.red(
-                meter.energyActiveExport
-                  .toFixed(2)
-                  .padEnd(15)
-              )}` +
-              `${chalk.yellow(
-                meter.energyReactiveImport
-                  .toFixed(2)
-                  .padEnd(17)
-              )}` +
-              `${chalk.yellowBright(
-                meter.energyReactiveExport
-                  .toFixed(2)
-                  .padEnd(17)
-              )}` +
-              `${chalk.white(
-                meter.energyApparent.toFixed(2).padEnd(10)
-              )}` +
-              `${chalk.gray(meter.recordedAt)}`
-          );
-        });*/
-      } catch (err) {
-        console.error(
-          //chalk.bgRed("Error sending meter data:"),
-          err
-        );
-      }
-    };
+function scheduleDailyTask( hour: number, minute: number, task: () => void): void {
+  function scheduleNextRun(): void {
+    const now = new Date();
+    const nextRun = new Date();
 
-    // Initial call
-    await sendMeterData();
+    nextRun.setHours(hour, minute, 0, 0);
 
-    // Repeat every 15 minutes
-    setInterval(sendMeterData, 15 * 60 * 1000);
-  } catch (err) {
-    console.error("Login failed:", err);
+    if (nextRun <= now) {
+      nextRun.setDate(nextRun.getDate() + 1);
+    }
+
+    const delay = nextRun.getTime() - now.getTime();
+    console.log(
+      `Task scheduled to run in ${(delay / 1000).toFixed(0)}s at ${nextRun}`
+    );
+
+    setTimeout(() => {
+      task();
+      scheduleNextRun(); // reschedule for the next day
+    }, delay);
   }
+
+  scheduleNextRun();
 }
 
 app();
