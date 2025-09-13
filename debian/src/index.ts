@@ -7,7 +7,7 @@ import ReadMeters from "./modbus/ReadMeters";
 import postMeterData from "./SendMeterData";
 import { TimeSheet } from "./domain/TimeSheet";
 import { buildTimeSheet } from "./helpers/CreateTimeSheet"
-import { getTimeSheetRequestPost } from "./services/TimeSheetService"
+import { getTimeSheetRequestPost, getTimeSheetUpdatedInControllerRequestPost } from "./services/TimeSheetService"
 //import chalk from "chalk";
 
 async function app() {
@@ -19,10 +19,15 @@ async function app() {
     const token = await login(configData.hostname);
     const timesheetData = await getTimeSheetRequestPost(configData.companyName,configData.hostname,token)
     console.log("timesheetData",timesheetData)
-    const timeSheetBuidl= buildTimeSheet(timesheetData)
-    console.log("timeSheetBuidl",timeSheetBuidl)
-    console.log("timeSheetBuidl lenght",timeSheetBuidl.readElMeterTimeTable.length)
-    console.log("timeSheetBuidl last",timeSheetBuidl.readElMeterTimeTable[timeSheetBuidl.readElMeterTimeTable.length-1])
+    if(timesheetData.status=="CONTROLLER_UP_TO_DATE"){
+      console.log("CONTROLLER_UP_TO_DATE")
+    }else{
+      const timeSheetBuidl= buildTimeSheet(timesheetData.timeSheet)
+      console.log("timeSheetBuidl",timeSheetBuidl)
+      console.log("timeSheetBuidl lenght",timeSheetBuidl.readElMeterTimeTable.length)
+      console.log("timeSheetBuidl last",timeSheetBuidl.readElMeterTimeTable[timeSheetBuidl.readElMeterTimeTable.length-1])
+      await getTimeSheetUpdatedInControllerRequestPost(configData.companyName,configData.hostname,token)
+    }
     //intitTimeTable(configData,timeSheet)
     //console.log("data sent");
   } catch (err) {
