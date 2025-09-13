@@ -7,6 +7,7 @@ import ReadMeters from "./modbus/ReadMeters";
 import postMeterData from "./SendMeterData";
 import { TimeSheet } from "./domain/TimeSheet";
 import { buildTimeSheet } from "./helpers/CreateTimeSheet"
+import { writeTimeSheetToJson } from "./helpers/WriteTimeSheetToJson"
 import { getTimeSheetRequestPost, getTimeSheetUpdatedInControllerRequestPost } from "./services/TimeSheetService"
 //import chalk from "chalk";
 
@@ -26,6 +27,7 @@ async function app() {
       console.log("timeSheetBuidl",timeSheetBuidl)
       console.log("timeSheetBuidl lenght",timeSheetBuidl.readElMeterTimeTable.length)
       console.log("timeSheetBuidl last",timeSheetBuidl.readElMeterTimeTable[timeSheetBuidl.readElMeterTimeTable.length-1])
+      writeTimeSheetToJson("timeSheet.json",timeSheetBuidl)
       await getTimeSheetUpdatedInControllerRequestPost(configData.companyName,configData.hostname,token)
     }
     //intitTimeTable(configData,timeSheet)
