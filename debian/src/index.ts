@@ -16,20 +16,8 @@ async function app() {
   try {
     const configData: ConfigData = await loadConfig<ConfigData>('config.json');
     const timeSheet: TimeSheet = await loadConfig<TimeSheet>('timeSheet.json');
-    //console.log("Config data: ", configData);
     const token = await login(configData.hostname);
-    const timesheetData = await getTimeSheetRequestPost(configData.companyName,configData.hostname,token)
-    console.log("timesheetData",timesheetData)
-    if(timesheetData.status=="CONTROLLER_UP_TO_DATE"){
-      console.log("CONTROLLER_UP_TO_DATE")
-    }else{
-      const timeSheetBuidl= buildTimeSheet(timesheetData.timeSheet)
-      console.log("timeSheetBuidl",timeSheetBuidl)
-      console.log("timeSheetBuidl lenght",timeSheetBuidl.readElMeterTimeTable.length)
-      console.log("timeSheetBuidl last",timeSheetBuidl.readElMeterTimeTable[timeSheetBuidl.readElMeterTimeTable.length-1])
-      writeTimeSheetToJson("timeSheet.json",timeSheetBuidl)
-      await getTimeSheetUpdatedInControllerRequestPost(configData.companyName,configData.hostname,token)
-    }
+    const timeSheetUpToDate = await prepereTimeSheet(configData,timeSheet,token)
     //intitTimeTable(configData,timeSheet)
     //console.log("data sent");
   } catch (err) {
@@ -40,6 +28,20 @@ async function app() {
 async function displayData(meterData: any) {
   console.log("Displaying data");
   console.table(meterData);
+}
+
+async function prepereTimeSheet(configData : ConfigData, timeSheet : TimeSheet, token : string) : Promise<TimeSheet> {
+  const timesheetData = await getTimeSheetRequestPost(configData.companyName,configData.hostname,token);
+  if(timesheetData.status=="CONTROLLER_UP_TO_DATE"){
+    console.log("CONTROLLER_UP_TO_DATE");
+    return timeSheet;
+  }else{
+    const timeSheetBuidl : TimeSheet = buildTimeSheet(timesheetData.timeSheet)
+    console.log("timeSheetBuidl lenght",timeSheetBuidl.readElMeterTimeTable.length)
+    writeTimeSheetToJson("timeSheet.json",timeSheetBuidl)
+    await getTimeSheetUpdatedInControllerRequestPost(configData.companyName,configData.hostname,token)
+    return timeSheetBuidl;
+  }
 }
 
 async function readMeterInstructions(config: ConfigData){
@@ -65,6 +67,7 @@ function intitTimeTable(config: ConfigData, timeSheet: TimeSheet){
           .toString()
           .padStart(2, "0")}`
       );
+      // logic for when time sheet entry comes
       //displayData(config)
     });
   });
