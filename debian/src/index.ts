@@ -5,7 +5,9 @@ import { loadConfig } from "./config/LoadConfigData";
 import { ConfigData } from "./domain/ConfigData";
 import ReadMeters from "./modbus/ReadMeters";
 import postMeterData from "./SendMeterData";
-import { TimeSheet } from "./domain/TimeSheet"
+import { TimeSheet } from "./domain/TimeSheet";
+import { buildTimeSheet } from "./helpers/CreateTimeSheet"
+import { getTimeSheetRequestPost } from "./services/TimeSheetService"
 //import chalk from "chalk";
 
 async function app() {
@@ -13,15 +15,14 @@ async function app() {
   try {
     const configData: ConfigData = await loadConfig<ConfigData>('config.json');
     const timeSheet: TimeSheet = await loadConfig<TimeSheet>('timeSheet.json');
-    console.log("Config data: ", configData);
-    //const token = await login(configData.hostname); // wait for login and get the token
-    //console.log("Token received in index.ts:", token);
-    //console.log("Read data:", ReadMeters())
-    //postMeterData(await ReadMeters(), "localhost", token);
-    //let meterData = await ReadMeters();
-    //displayData(meterData);
-    intitTimeTable(configData,timeSheet)
-    console.log("data sent");
+    //console.log("Config data: ", configData);
+    const token = await login(configData.hostname);
+    const timesheetData = await getTimeSheetRequestPost(configData.companyName,configData.hostname,token)
+    console.log("timesheetData",timesheetData)
+    const timeSheetBuidl= buildTimeSheet(timesheetData)
+    console.log("timeSheetBuidl",timeSheetBuidl)
+    //intitTimeTable(configData,timeSheet)
+    //console.log("data sent");
   } catch (err) {
     console.error("Login failed:", err);
   }
