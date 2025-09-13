@@ -9,12 +9,16 @@ export function buildTimeSheet(entries: TimeSheetEntry[]): TimeSheet {
       if (!entry.isActive) continue;
   
       // Parse start time
-      let [startHour, startMin] = entry.startTime.split(":").map(Number);
-      let currentMinutes = startHour * 60 + startMin;
+      const [startHour, startMin] = entry.startTime.split(":").map(Number);
+      const startMinutes = startHour * 60 + startMin;
   
-      // Loop until 24h
-      while (currentMinutes < 24 * 60) {
-        const hour = Math.floor(currentMinutes / 60);
+      let currentMinutes = startMinutes;
+      let first = true;
+  
+      while (first || currentMinutes % (24 * 60) !== startMinutes) {
+        first = false;
+  
+        const hour = Math.floor((currentMinutes % (24 * 60)) / 60);
         const minute = currentMinutes % 60;
   
         result.push({

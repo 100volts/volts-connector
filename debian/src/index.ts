@@ -21,6 +21,8 @@ async function app() {
     console.log("timesheetData",timesheetData)
     const timeSheetBuidl= buildTimeSheet(timesheetData)
     console.log("timeSheetBuidl",timeSheetBuidl)
+    console.log("timeSheetBuidl lenght",timeSheetBuidl.readElMeterTimeTable.length)
+    console.log("timeSheetBuidl last",timeSheetBuidl.readElMeterTimeTable[timeSheetBuidl.readElMeterTimeTable.length-1])
     //intitTimeTable(configData,timeSheet)
     //console.log("data sent");
   } catch (err) {
