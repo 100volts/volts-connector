@@ -11,6 +11,8 @@ import { writeTimeSheetToJson } from "./helpers/WriteTimeSheetToJson"
 import { getTimeSheetRequestPost, getTimeSheetUpdatedInControllerRequestPost } from "./services/TimeSheetService"
 //import chalk from "chalk";
 
+let scheduledTasks: NodeJS.Timeout[] = [];
+
 async function app() {
   console.log("Hello, app is running");
   try {
@@ -19,6 +21,7 @@ async function app() {
     const token = await login(configData.hostname);
     const timeSheetUpToDate = await prepereTimeSheet(configData,timeSheet,token)
     //intitTimeTable(configData,timeSheet)
+    intitTimeTableGlobalSchedile(configData,timeSheet)
     //console.log("data sent");
   } catch (err) {
     console.error("Login failed:", err);
@@ -73,14 +76,39 @@ function intitTimeTable(config: ConfigData, timeSheet: TimeSheet){
   });
 }
 
-function scheduleDailyTask( hour: number, minute: number, task: () => void): void {
-  function scheduleNextRun(): void {
+function intitTimeTableGlobalSchedile(config: ConfigData, timeSheet: TimeSheet) {
+  clearScheduledTasks();
+
+  timeSheet.readElMeterTimeTable.forEach((entry, index) => {
+    const hour = parseInt(entry.hower, 10);
+    const minute = parseInt(entry.minits, 10);
+
+    if (isNaN(hour) || isNaN(minute)) {
+      console.error(`Invalid time in timetable entry ${index}:`, entry);
+      return;
+    }
+
+    scheduleDailyTask(hour, minute, () => {
+      console.log(
+        `Running scheduled task from timetable entry ${index} at ${hour}:${minute
+          .toString()
+          .padStart(2, "0")}`
+      );
+      // logic for when time sheet entry comes
+      //displayData(config)
+    });
+  });
+}
+
+function scheduleDailyTask(hour: number, minute: number, task: () => void): void {
+  function scheduleNextRun(isFirstRun: boolean = false): void {
     const now = new Date();
     const nextRun = new Date();
 
     nextRun.setHours(hour, minute, 0, 0);
 
-    if (nextRun <= now) {
+    // If this is not the first run, always push to tomorrow
+    if (!isFirstRun || nextRun <= now) {
       nextRun.setDate(nextRun.getDate() + 1);
     }
 
@@ -89,13 +117,24 @@ function scheduleDailyTask( hour: number, minute: number, task: () => void): voi
       `Task scheduled to run in ${(delay / 1000).toFixed(0)}s at ${nextRun}`
     );
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       task();
-      scheduleNextRun(); // reschedule for the next day
+      scheduleNextRun(false); // next runs always move forward by a day
     }, delay);
+
+    scheduledTasks.push(timer);
   }
 
-  scheduleNextRun();
+  scheduleNextRun(true); // first run uses today's slot if still upcoming
 }
+
+
+
+function clearScheduledTasks() {
+  scheduledTasks.forEach(timer => clearTimeout(timer));
+  scheduledTasks = [];
+  console.log("All scheduled tasks cleared");
+}
+
 
 app();
