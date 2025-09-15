@@ -32,11 +32,41 @@ async function app() {
       timeSheet,
       token
     );
+    //Display
+
     await wellcome();
-    //intitTimeTableGlobalSchedile(configData, timeSheet);
+
+    //Initialize timetable
+    intitTimeTableGlobalSchedile(
+      configData,
+      timeSheetUpToDate,
+      token
+    );
     //console.log("data sent");
   } catch (err) {
     console.error("Login failed:", err);
+  }
+}
+
+async function checkForTimeSheetUpdates(
+  config: ConfigData,
+  token: string
+): Promise<void> {
+  const timesheetData = await getTimeSheetRequestPost(
+    config.companyName,
+    config.hostname,
+    token
+  );
+  if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
+    console.log("No updates for timesheet");
+  } else {
+    //reinit timesheets
+    intitTimeTableGlobalSchedile(
+      config,
+      buildTimeSheet(timesheetData.timeSheet),
+      token
+    );
+    console.log("Time sheet update available");
   }
 }
 
@@ -113,7 +143,8 @@ function intitTimeTable(
 
 function intitTimeTableGlobalSchedile(
   config: ConfigData,
-  timeSheet: TimeSheet
+  timeSheet: TimeSheet,
+  token: string
 ) {
   clearScheduledTasks();
 
@@ -136,6 +167,7 @@ function intitTimeTableGlobalSchedile(
           .padStart(2, "0")}`
       );
       // logic for when time sheet entry comes
+      checkForTimeSheetUpdates(config, token);
       //displayData(config)
     });
   });
