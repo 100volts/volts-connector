@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import App from "./App";
 import { login } from "./login";
 import { loadConfig } from "./config/LoadConfigData";
 import { ConfigData } from "./domain/ConfigData";
@@ -8,26 +9,22 @@ import postMeterData from "./SendMeterData";
 import { TimeSheet } from "./domain/TimeSheet";
 import { buildTimeSheet } from "./helpers/CreateTimeSheet";
 import { writeTimeSheetToJson } from "./helpers/WriteTimeSheetToJson";
-import { AppStatus } from "./domain/AppStatus";
 import {
   getTimeSheetRequestPost,
   getTimeSheetUpdatedInControllerRequestPost,
 } from "./services/TimeSheetService";
-//import chalk from "chalk";
 
 let scheduledTasks: NodeJS.Timeout[] = [];
-let appStatus: AppStatus = {
-  lastInput: "",
-  networkStatus: "OK",
-};
+const appInstance = App.getInstance();
 
 async function app() {
   console.log("Hello, app is running");
   try {
-    const configData: ConfigData =
-      await loadConfig<ConfigData>("config.json");
     const timeSheet: TimeSheet =
       await loadConfig<TimeSheet>("timeSheet.json");
+    await appInstance.loadConfigData();
+    let configData: ConfigData =
+      appInstance.getConfigData();
     const token = await login(configData.hostname);
     console.log("Back from login with token:", token);
     const timeSheetUpToDate = await prepereTimeSheet(
