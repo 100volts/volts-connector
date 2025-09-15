@@ -6,22 +6,37 @@ import { ConfigData } from "./domain/ConfigData";
 import ReadMeters from "./modbus/ReadMeters";
 import postMeterData from "./SendMeterData";
 import { TimeSheet } from "./domain/TimeSheet";
-import { buildTimeSheet } from "./helpers/CreateTimeSheet"
-import { writeTimeSheetToJson } from "./helpers/WriteTimeSheetToJson"
-import { getTimeSheetRequestPost, getTimeSheetUpdatedInControllerRequestPost } from "./services/TimeSheetService"
+import { buildTimeSheet } from "./helpers/CreateTimeSheet";
+import { writeTimeSheetToJson } from "./helpers/WriteTimeSheetToJson";
+import { AppStatus } from "./domain/AppStatus";
+import {
+  getTimeSheetRequestPost,
+  getTimeSheetUpdatedInControllerRequestPost,
+} from "./services/TimeSheetService";
 //import chalk from "chalk";
 
 let scheduledTasks: NodeJS.Timeout[] = [];
+let appStatus: AppStatus = {
+  lastInput: "",
+  networkStatus: "OK",
+};
 
 async function app() {
   console.log("Hello, app is running");
   try {
-    const configData: ConfigData = await loadConfig<ConfigData>('config.json');
-    const timeSheet: TimeSheet = await loadConfig<TimeSheet>('timeSheet.json');
+    const configData: ConfigData =
+      await loadConfig<ConfigData>("config.json");
+    const timeSheet: TimeSheet =
+      await loadConfig<TimeSheet>("timeSheet.json");
     const token = await login(configData.hostname);
-    const timeSheetUpToDate = await prepereTimeSheet(configData,timeSheet,token)
-    //intitTimeTable(configData,timeSheet)
-    intitTimeTableGlobalSchedile(configData,timeSheet)
+    console.log("Back from login with token:", token);
+    const timeSheetUpToDate = await prepereTimeSheet(
+      configData,
+      timeSheet,
+      token
+    );
+    await wellcome();
+    //intitTimeTableGlobalSchedile(configData, timeSheet);
     //console.log("data sent");
   } catch (err) {
     console.error("Login failed:", err);
@@ -33,37 +48,60 @@ async function displayData(meterData: any) {
   console.table(meterData);
 }
 
-async function prepereTimeSheet(configData : ConfigData, timeSheet : TimeSheet, token : string) : Promise<TimeSheet> {
-  const timesheetData = await getTimeSheetRequestPost(configData.companyName,configData.hostname,token);
-  if(timesheetData.status=="CONTROLLER_UP_TO_DATE"){
+async function prepereTimeSheet(
+  configData: ConfigData,
+  timeSheet: TimeSheet,
+  token: string
+): Promise<TimeSheet> {
+  const timesheetData = await getTimeSheetRequestPost(
+    configData.companyName,
+    configData.hostname,
+    token
+  );
+  if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("CONTROLLER_UP_TO_DATE");
     return timeSheet;
-  }else{
-    const timeSheetBuidl : TimeSheet = buildTimeSheet(timesheetData.timeSheet)
-    console.log("timeSheetBuidl lenght",timeSheetBuidl.readElMeterTimeTable.length)
-    writeTimeSheetToJson("timeSheet.json",timeSheetBuidl)
-    await getTimeSheetUpdatedInControllerRequestPost(configData.companyName,configData.hostname,token)
+  } else {
+    const timeSheetBuidl: TimeSheet = buildTimeSheet(
+      timesheetData.timeSheet
+    );
+    console.log(
+      "timeSheetBuidl lenght",
+      timeSheetBuidl.readElMeterTimeTable.length
+    );
+    writeTimeSheetToJson("timeSheet.json", timeSheetBuidl);
+    await getTimeSheetUpdatedInControllerRequestPost(
+      configData.companyName,
+      configData.hostname,
+      token
+    );
     return timeSheetBuidl;
   }
 }
 
-async function readMeterInstructions(config: ConfigData){
+async function readMeterInstructions(config: ConfigData) {
   const token = await login(config.hostname);
   let meterData = await ReadMeters();
   await postMeterData(meterData, "localhost", token);
-  await displayData(meterData)
+  await displayData(meterData);
 }
 
-function intitTimeTable(config: ConfigData, timeSheet: TimeSheet){
+function intitTimeTable(
+  config: ConfigData,
+  timeSheet: TimeSheet
+) {
   timeSheet.readElMeterTimeTable.forEach((entry, index) => {
     const hour = parseInt(entry.hower, 10);
     const minute = parseInt(entry.minits, 10);
-  
+
     if (isNaN(hour) || isNaN(minute)) {
-      console.error(`Invalid time in timetable entry ${index}:`, entry);
+      console.error(
+        `Invalid time in timetable entry ${index}:`,
+        entry
+      );
       return;
     }
-  
+
     scheduleDailyTask(hour, minute, () => {
       console.log(
         `Running scheduled task from timetable entry ${index} at ${hour}:${minute
@@ -76,7 +114,10 @@ function intitTimeTable(config: ConfigData, timeSheet: TimeSheet){
   });
 }
 
-function intitTimeTableGlobalSchedile(config: ConfigData, timeSheet: TimeSheet) {
+function intitTimeTableGlobalSchedile(
+  config: ConfigData,
+  timeSheet: TimeSheet
+) {
   clearScheduledTasks();
 
   timeSheet.readElMeterTimeTable.forEach((entry, index) => {
@@ -84,7 +125,10 @@ function intitTimeTableGlobalSchedile(config: ConfigData, timeSheet: TimeSheet) 
     const minute = parseInt(entry.minits, 10);
 
     if (isNaN(hour) || isNaN(minute)) {
-      console.error(`Invalid time in timetable entry ${index}:`, entry);
+      console.error(
+        `Invalid time in timetable entry ${index}:`,
+        entry
+      );
       return;
     }
 
@@ -100,8 +144,14 @@ function intitTimeTableGlobalSchedile(config: ConfigData, timeSheet: TimeSheet) 
   });
 }
 
-function scheduleDailyTask(hour: number, minute: number, task: () => void): void {
-  function scheduleNextRun(isFirstRun: boolean = false): void {
+function scheduleDailyTask(
+  hour: number,
+  minute: number,
+  task: () => void
+): void {
+  function scheduleNextRun(
+    isFirstRun: boolean = false
+  ): void {
     const now = new Date();
     const nextRun = new Date();
 
@@ -114,7 +164,9 @@ function scheduleDailyTask(hour: number, minute: number, task: () => void): void
 
     const delay = nextRun.getTime() - now.getTime();
     console.log(
-      `Task scheduled to run in ${(delay / 1000).toFixed(0)}s at ${nextRun}`
+      `Task scheduled to run in ${(delay / 1000).toFixed(
+        0
+      )}s at ${nextRun}`
     );
 
     const timer = setTimeout(() => {
@@ -128,13 +180,15 @@ function scheduleDailyTask(hour: number, minute: number, task: () => void): void
   scheduleNextRun(true); // first run uses today's slot if still upcoming
 }
 
-
-
 function clearScheduledTasks() {
-  scheduledTasks.forEach(timer => clearTimeout(timer));
+  scheduledTasks.forEach((timer) => clearTimeout(timer));
   scheduledTasks = [];
   console.log("All scheduled tasks cleared");
 }
 
+async function wellcome() {
+  const chalkAnimation = await import("chalk-animation");
+  chalkAnimation.default.neon("Volts-Connector \n");
+}
 
 app();
