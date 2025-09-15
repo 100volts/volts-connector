@@ -1,5 +1,6 @@
 import * as http from "http";
 import { TimeSheetEntry, TimeSheetResponse } from "../domain/TimeSheet";
+import {  stopLoadingSpinner } from "../LoadingDisplay";
 
 export function getTimeSheetRequestPost(
   companyName: string,
@@ -40,7 +41,9 @@ export function getTimeSheetRequestPost(
     });
 
     req.on("error", (e) => {
-      reject(`Problem with request send time sheet: ${e.message}`);
+      stopLoadingSpinner("Problem with request send time sheet: "+e.message);
+      //console.log("Problem with request send time sheet: ", e.message);
+      //reject(`Problem with request send time sheet: ${e.message}`);
     });
 
     req.write(postData);
@@ -87,7 +90,8 @@ export function getTimeSheetUpdatedInControllerRequestPost(
       });
   
       req.on("error", (e) => {
-        reject(`Problem with request send time sheet: ${e.message}`);
+        console.log("Problem with request send time sheet: ", e.message);
+        //reject(`Problem with request send time sheet: ${e.message}`);
       });
   
       req.write(postData);

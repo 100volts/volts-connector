@@ -13,6 +13,7 @@ import {
   getTimeSheetRequestPost,
   getTimeSheetUpdatedInControllerRequestPost,
 } from "./services/TimeSheetService";
+import { startLoadingSpinner, stopLoadingSpinner } from "./LoadingDisplay";
 
 let scheduledTasks: NodeJS.Timeout[] = [];
 const appInstance = App.getInstance();
@@ -20,6 +21,7 @@ const appInstance = App.getInstance();
 async function app() {
   console.log("Hello, app is running");
   try {
+    startLoadingSpinner("Loading config data...");
     const timeSheet: TimeSheet =
       await loadConfig<TimeSheet>("timeSheet.json");
     await appInstance.loadConfigData();
@@ -33,7 +35,7 @@ async function app() {
       token
     );
     //Display
-
+    stopLoadingSpinner("Config data loaded");
     await wellcome();
 
     //Initialize timetable

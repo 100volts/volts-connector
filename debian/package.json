@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^5.6.2",
-    "chalk-animation": "^1.6.0",
+    "chalk-animation": "^2.0.3",
     "figlet": "^1.9.1",
     "inquirer": "^12.9.4",
     "modbus-serial": "^8.0.21-no-serial-port",

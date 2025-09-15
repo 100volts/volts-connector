@@ -1,6 +1,7 @@
 {
     "port": "COM3",
     "baudRate": 9600,
-    "readTime":120000
+    "readTime":120000,
+    "host":"localhost"
   }
   

@@ -11,11 +11,20 @@ client
 
     // Function to write values to the Modbus slave
     function writeRegisters() {
-      // Write a float value to the first register (register 0)
+      // Convert float 123.45 to two 16-bit words
+      let floatBuffer = Buffer.alloc(4);
+      floatBuffer.writeFloatLE(123.45, 0); // Converts the float to 4 bytes in little-endian format
+
+      // Write the two 16-bit words to registers
+      const registers = [
+        floatBuffer.readUInt16LE(0), // Low byte
+        floatBuffer.readUInt16LE(2), // High byte
+      ];
+
       client
-        .writeFloat32(0, 123.45)
+        .writeRegisters(0, registers) // Writing to registers 0 and 1
         .then(() => {
-          console.log("Float written to register 0");
+          console.log("Float written to registers 0 and 1");
 
           // Write an integer value to register 2
           return client.writeUInt16(2, 66);
@@ -30,16 +39,19 @@ client
 
     // Function to read registers from the slave
     function readRegisters() {
-      // Read the float value from register 0
+      // Read the two registers where the float was written
       client
         .readHoldingRegisters(0, 2)
         .then((data) => {
-          console.log("Read values:", data.data);
-          console.log(
-            "Float value from register 0:",
-            data.data[0] / Math.pow(2, 16)
-          ); // Adjust as per the encoding
-          console.log("Integer value from register 2:", data.data[1]);
+          // Convert the two 16-bit values back into a float
+          let floatBuffer = Buffer.alloc(4);
+          floatBuffer.writeUInt16LE(data.data[0], 0); // Low byte
+          floatBuffer.writeUInt16LE(data.data[1], 2); // High byte
+
+          let floatVal = floatBuffer.readFloatLE(0);
+          console.log("Read float value from registers 0 and 1:", floatVal);
+
+          console.log("Integer value from register 2:", data.data[2]);
         })
         .catch((err) => {
           console.error("Error reading registers:", err);
