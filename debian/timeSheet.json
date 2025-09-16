@@ -1,52 +1,2884 @@
 {
   "readElMeterTimeTable": [
     {
-      "hower": "08",
+      "hower": "09",
+      "minits": "00"
+    },
+    {
+      "hower": "09",
+      "minits": "02"
+    },
+    {
+      "hower": "09",
+      "minits": "04"
+    },
+    {
+      "hower": "09",
+      "minits": "06"
+    },
+    {
+      "hower": "09",
+      "minits": "08"
+    },
+    {
+      "hower": "09",
+      "minits": "10"
+    },
+    {
+      "hower": "09",
+      "minits": "12"
+    },
+    {
+      "hower": "09",
+      "minits": "14"
+    },
+    {
+      "hower": "09",
+      "minits": "16"
+    },
+    {
+      "hower": "09",
+      "minits": "18"
+    },
+    {
+      "hower": "09",
+      "minits": "20"
+    },
+    {
+      "hower": "09",
+      "minits": "22"
+    },
+    {
+      "hower": "09",
+      "minits": "24"
+    },
+    {
+      "hower": "09",
+      "minits": "26"
+    },
+    {
+      "hower": "09",
+      "minits": "28"
+    },
+    {
+      "hower": "09",
       "minits": "30"
+    },
+    {
+      "hower": "09",
+      "minits": "32"
+    },
+    {
+      "hower": "09",
+      "minits": "34"
+    },
+    {
+      "hower": "09",
+      "minits": "36"
+    },
+    {
+      "hower": "09",
+      "minits": "38"
+    },
+    {
+      "hower": "09",
+      "minits": "40"
+    },
+    {
+      "hower": "09",
+      "minits": "42"
+    },
+    {
+      "hower": "09",
+      "minits": "44"
+    },
+    {
+      "hower": "09",
+      "minits": "46"
+    },
+    {
+      "hower": "09",
+      "minits": "48"
+    },
+    {
+      "hower": "09",
+      "minits": "50"
+    },
+    {
+      "hower": "09",
+      "minits": "52"
+    },
+    {
+      "hower": "09",
+      "minits": "54"
+    },
+    {
+      "hower": "09",
+      "minits": "56"
+    },
+    {
+      "hower": "09",
+      "minits": "58"
+    },
+    {
+      "hower": "10",
+      "minits": "00"
+    },
+    {
+      "hower": "10",
+      "minits": "02"
+    },
+    {
+      "hower": "10",
+      "minits": "04"
+    },
+    {
+      "hower": "10",
+      "minits": "06"
+    },
+    {
+      "hower": "10",
+      "minits": "08"
+    },
+    {
+      "hower": "10",
+      "minits": "10"
+    },
+    {
+      "hower": "10",
+      "minits": "12"
+    },
+    {
+      "hower": "10",
+      "minits": "14"
+    },
+    {
+      "hower": "10",
+      "minits": "16"
+    },
+    {
+      "hower": "10",
+      "minits": "18"
+    },
+    {
+      "hower": "10",
+      "minits": "20"
+    },
+    {
+      "hower": "10",
+      "minits": "22"
+    },
+    {
+      "hower": "10",
+      "minits": "24"
+    },
+    {
+      "hower": "10",
+      "minits": "26"
+    },
+    {
+      "hower": "10",
+      "minits": "28"
     },
     {
       "hower": "10",
       "minits": "30"
     },
     {
+      "hower": "10",
+      "minits": "32"
+    },
+    {
+      "hower": "10",
+      "minits": "34"
+    },
+    {
+      "hower": "10",
+      "minits": "36"
+    },
+    {
+      "hower": "10",
+      "minits": "38"
+    },
+    {
+      "hower": "10",
+      "minits": "40"
+    },
+    {
+      "hower": "10",
+      "minits": "42"
+    },
+    {
+      "hower": "10",
+      "minits": "44"
+    },
+    {
+      "hower": "10",
+      "minits": "46"
+    },
+    {
+      "hower": "10",
+      "minits": "48"
+    },
+    {
+      "hower": "10",
+      "minits": "50"
+    },
+    {
+      "hower": "10",
+      "minits": "52"
+    },
+    {
+      "hower": "10",
+      "minits": "54"
+    },
+    {
+      "hower": "10",
+      "minits": "56"
+    },
+    {
+      "hower": "10",
+      "minits": "58"
+    },
+    {
+      "hower": "11",
+      "minits": "00"
+    },
+    {
+      "hower": "11",
+      "minits": "02"
+    },
+    {
+      "hower": "11",
+      "minits": "04"
+    },
+    {
+      "hower": "11",
+      "minits": "06"
+    },
+    {
+      "hower": "11",
+      "minits": "08"
+    },
+    {
+      "hower": "11",
+      "minits": "10"
+    },
+    {
+      "hower": "11",
+      "minits": "12"
+    },
+    {
+      "hower": "11",
+      "minits": "14"
+    },
+    {
+      "hower": "11",
+      "minits": "16"
+    },
+    {
+      "hower": "11",
+      "minits": "18"
+    },
+    {
+      "hower": "11",
+      "minits": "20"
+    },
+    {
+      "hower": "11",
+      "minits": "22"
+    },
+    {
+      "hower": "11",
+      "minits": "24"
+    },
+    {
+      "hower": "11",
+      "minits": "26"
+    },
+    {
+      "hower": "11",
+      "minits": "28"
+    },
+    {
+      "hower": "11",
+      "minits": "30"
+    },
+    {
+      "hower": "11",
+      "minits": "32"
+    },
+    {
+      "hower": "11",
+      "minits": "34"
+    },
+    {
+      "hower": "11",
+      "minits": "36"
+    },
+    {
+      "hower": "11",
+      "minits": "38"
+    },
+    {
+      "hower": "11",
+      "minits": "40"
+    },
+    {
+      "hower": "11",
+      "minits": "42"
+    },
+    {
+      "hower": "11",
+      "minits": "44"
+    },
+    {
+      "hower": "11",
+      "minits": "46"
+    },
+    {
+      "hower": "11",
+      "minits": "48"
+    },
+    {
+      "hower": "11",
+      "minits": "50"
+    },
+    {
+      "hower": "11",
+      "minits": "52"
+    },
+    {
+      "hower": "11",
+      "minits": "54"
+    },
+    {
+      "hower": "11",
+      "minits": "56"
+    },
+    {
+      "hower": "11",
+      "minits": "58"
+    },
+    {
+      "hower": "12",
+      "minits": "00"
+    },
+    {
+      "hower": "12",
+      "minits": "02"
+    },
+    {
+      "hower": "12",
+      "minits": "04"
+    },
+    {
+      "hower": "12",
+      "minits": "06"
+    },
+    {
+      "hower": "12",
+      "minits": "08"
+    },
+    {
+      "hower": "12",
+      "minits": "10"
+    },
+    {
+      "hower": "12",
+      "minits": "12"
+    },
+    {
+      "hower": "12",
+      "minits": "14"
+    },
+    {
+      "hower": "12",
+      "minits": "16"
+    },
+    {
+      "hower": "12",
+      "minits": "18"
+    },
+    {
+      "hower": "12",
+      "minits": "20"
+    },
+    {
+      "hower": "12",
+      "minits": "22"
+    },
+    {
+      "hower": "12",
+      "minits": "24"
+    },
+    {
+      "hower": "12",
+      "minits": "26"
+    },
+    {
+      "hower": "12",
+      "minits": "28"
+    },
+    {
       "hower": "12",
       "minits": "30"
+    },
+    {
+      "hower": "12",
+      "minits": "32"
+    },
+    {
+      "hower": "12",
+      "minits": "34"
+    },
+    {
+      "hower": "12",
+      "minits": "36"
+    },
+    {
+      "hower": "12",
+      "minits": "38"
+    },
+    {
+      "hower": "12",
+      "minits": "40"
+    },
+    {
+      "hower": "12",
+      "minits": "42"
+    },
+    {
+      "hower": "12",
+      "minits": "44"
+    },
+    {
+      "hower": "12",
+      "minits": "46"
+    },
+    {
+      "hower": "12",
+      "minits": "48"
+    },
+    {
+      "hower": "12",
+      "minits": "50"
+    },
+    {
+      "hower": "12",
+      "minits": "52"
+    },
+    {
+      "hower": "12",
+      "minits": "54"
+    },
+    {
+      "hower": "12",
+      "minits": "56"
+    },
+    {
+      "hower": "12",
+      "minits": "58"
+    },
+    {
+      "hower": "13",
+      "minits": "00"
+    },
+    {
+      "hower": "13",
+      "minits": "02"
+    },
+    {
+      "hower": "13",
+      "minits": "04"
+    },
+    {
+      "hower": "13",
+      "minits": "06"
+    },
+    {
+      "hower": "13",
+      "minits": "08"
+    },
+    {
+      "hower": "13",
+      "minits": "10"
+    },
+    {
+      "hower": "13",
+      "minits": "12"
+    },
+    {
+      "hower": "13",
+      "minits": "14"
+    },
+    {
+      "hower": "13",
+      "minits": "16"
+    },
+    {
+      "hower": "13",
+      "minits": "18"
+    },
+    {
+      "hower": "13",
+      "minits": "20"
+    },
+    {
+      "hower": "13",
+      "minits": "22"
+    },
+    {
+      "hower": "13",
+      "minits": "24"
+    },
+    {
+      "hower": "13",
+      "minits": "26"
+    },
+    {
+      "hower": "13",
+      "minits": "28"
+    },
+    {
+      "hower": "13",
+      "minits": "30"
+    },
+    {
+      "hower": "13",
+      "minits": "32"
+    },
+    {
+      "hower": "13",
+      "minits": "34"
+    },
+    {
+      "hower": "13",
+      "minits": "36"
+    },
+    {
+      "hower": "13",
+      "minits": "38"
+    },
+    {
+      "hower": "13",
+      "minits": "40"
+    },
+    {
+      "hower": "13",
+      "minits": "42"
+    },
+    {
+      "hower": "13",
+      "minits": "44"
+    },
+    {
+      "hower": "13",
+      "minits": "46"
+    },
+    {
+      "hower": "13",
+      "minits": "48"
+    },
+    {
+      "hower": "13",
+      "minits": "50"
+    },
+    {
+      "hower": "13",
+      "minits": "52"
+    },
+    {
+      "hower": "13",
+      "minits": "54"
+    },
+    {
+      "hower": "13",
+      "minits": "56"
+    },
+    {
+      "hower": "13",
+      "minits": "58"
+    },
+    {
+      "hower": "14",
+      "minits": "00"
+    },
+    {
+      "hower": "14",
+      "minits": "02"
+    },
+    {
+      "hower": "14",
+      "minits": "04"
+    },
+    {
+      "hower": "14",
+      "minits": "06"
+    },
+    {
+      "hower": "14",
+      "minits": "08"
+    },
+    {
+      "hower": "14",
+      "minits": "10"
+    },
+    {
+      "hower": "14",
+      "minits": "12"
+    },
+    {
+      "hower": "14",
+      "minits": "14"
+    },
+    {
+      "hower": "14",
+      "minits": "16"
+    },
+    {
+      "hower": "14",
+      "minits": "18"
+    },
+    {
+      "hower": "14",
+      "minits": "20"
+    },
+    {
+      "hower": "14",
+      "minits": "22"
+    },
+    {
+      "hower": "14",
+      "minits": "24"
+    },
+    {
+      "hower": "14",
+      "minits": "26"
+    },
+    {
+      "hower": "14",
+      "minits": "28"
     },
     {
       "hower": "14",
       "minits": "30"
     },
     {
+      "hower": "14",
+      "minits": "32"
+    },
+    {
+      "hower": "14",
+      "minits": "34"
+    },
+    {
+      "hower": "14",
+      "minits": "36"
+    },
+    {
+      "hower": "14",
+      "minits": "38"
+    },
+    {
+      "hower": "14",
+      "minits": "40"
+    },
+    {
+      "hower": "14",
+      "minits": "42"
+    },
+    {
+      "hower": "14",
+      "minits": "44"
+    },
+    {
+      "hower": "14",
+      "minits": "46"
+    },
+    {
+      "hower": "14",
+      "minits": "48"
+    },
+    {
+      "hower": "14",
+      "minits": "50"
+    },
+    {
+      "hower": "14",
+      "minits": "52"
+    },
+    {
+      "hower": "14",
+      "minits": "54"
+    },
+    {
+      "hower": "14",
+      "minits": "56"
+    },
+    {
+      "hower": "14",
+      "minits": "58"
+    },
+    {
+      "hower": "15",
+      "minits": "00"
+    },
+    {
+      "hower": "15",
+      "minits": "02"
+    },
+    {
+      "hower": "15",
+      "minits": "04"
+    },
+    {
+      "hower": "15",
+      "minits": "06"
+    },
+    {
+      "hower": "15",
+      "minits": "08"
+    },
+    {
+      "hower": "15",
+      "minits": "10"
+    },
+    {
+      "hower": "15",
+      "minits": "12"
+    },
+    {
+      "hower": "15",
+      "minits": "14"
+    },
+    {
+      "hower": "15",
+      "minits": "16"
+    },
+    {
+      "hower": "15",
+      "minits": "18"
+    },
+    {
+      "hower": "15",
+      "minits": "20"
+    },
+    {
+      "hower": "15",
+      "minits": "22"
+    },
+    {
+      "hower": "15",
+      "minits": "24"
+    },
+    {
+      "hower": "15",
+      "minits": "26"
+    },
+    {
+      "hower": "15",
+      "minits": "28"
+    },
+    {
+      "hower": "15",
+      "minits": "30"
+    },
+    {
+      "hower": "15",
+      "minits": "32"
+    },
+    {
+      "hower": "15",
+      "minits": "34"
+    },
+    {
+      "hower": "15",
+      "minits": "36"
+    },
+    {
+      "hower": "15",
+      "minits": "38"
+    },
+    {
+      "hower": "15",
+      "minits": "40"
+    },
+    {
+      "hower": "15",
+      "minits": "42"
+    },
+    {
+      "hower": "15",
+      "minits": "44"
+    },
+    {
+      "hower": "15",
+      "minits": "46"
+    },
+    {
+      "hower": "15",
+      "minits": "48"
+    },
+    {
+      "hower": "15",
+      "minits": "50"
+    },
+    {
+      "hower": "15",
+      "minits": "52"
+    },
+    {
+      "hower": "15",
+      "minits": "54"
+    },
+    {
+      "hower": "15",
+      "minits": "56"
+    },
+    {
+      "hower": "15",
+      "minits": "58"
+    },
+    {
+      "hower": "16",
+      "minits": "00"
+    },
+    {
+      "hower": "16",
+      "minits": "02"
+    },
+    {
+      "hower": "16",
+      "minits": "04"
+    },
+    {
+      "hower": "16",
+      "minits": "06"
+    },
+    {
+      "hower": "16",
+      "minits": "08"
+    },
+    {
+      "hower": "16",
+      "minits": "10"
+    },
+    {
+      "hower": "16",
+      "minits": "12"
+    },
+    {
+      "hower": "16",
+      "minits": "14"
+    },
+    {
+      "hower": "16",
+      "minits": "16"
+    },
+    {
+      "hower": "16",
+      "minits": "18"
+    },
+    {
+      "hower": "16",
+      "minits": "20"
+    },
+    {
+      "hower": "16",
+      "minits": "22"
+    },
+    {
+      "hower": "16",
+      "minits": "24"
+    },
+    {
+      "hower": "16",
+      "minits": "26"
+    },
+    {
+      "hower": "16",
+      "minits": "28"
+    },
+    {
       "hower": "16",
       "minits": "30"
+    },
+    {
+      "hower": "16",
+      "minits": "32"
+    },
+    {
+      "hower": "16",
+      "minits": "34"
+    },
+    {
+      "hower": "16",
+      "minits": "36"
+    },
+    {
+      "hower": "16",
+      "minits": "38"
+    },
+    {
+      "hower": "16",
+      "minits": "40"
+    },
+    {
+      "hower": "16",
+      "minits": "42"
+    },
+    {
+      "hower": "16",
+      "minits": "44"
+    },
+    {
+      "hower": "16",
+      "minits": "46"
+    },
+    {
+      "hower": "16",
+      "minits": "48"
+    },
+    {
+      "hower": "16",
+      "minits": "50"
+    },
+    {
+      "hower": "16",
+      "minits": "52"
+    },
+    {
+      "hower": "16",
+      "minits": "54"
+    },
+    {
+      "hower": "16",
+      "minits": "56"
+    },
+    {
+      "hower": "16",
+      "minits": "58"
+    },
+    {
+      "hower": "17",
+      "minits": "00"
+    },
+    {
+      "hower": "17",
+      "minits": "02"
+    },
+    {
+      "hower": "17",
+      "minits": "04"
+    },
+    {
+      "hower": "17",
+      "minits": "06"
+    },
+    {
+      "hower": "17",
+      "minits": "08"
+    },
+    {
+      "hower": "17",
+      "minits": "10"
+    },
+    {
+      "hower": "17",
+      "minits": "12"
+    },
+    {
+      "hower": "17",
+      "minits": "14"
+    },
+    {
+      "hower": "17",
+      "minits": "16"
+    },
+    {
+      "hower": "17",
+      "minits": "18"
+    },
+    {
+      "hower": "17",
+      "minits": "20"
+    },
+    {
+      "hower": "17",
+      "minits": "22"
+    },
+    {
+      "hower": "17",
+      "minits": "24"
+    },
+    {
+      "hower": "17",
+      "minits": "26"
+    },
+    {
+      "hower": "17",
+      "minits": "28"
+    },
+    {
+      "hower": "17",
+      "minits": "30"
+    },
+    {
+      "hower": "17",
+      "minits": "32"
+    },
+    {
+      "hower": "17",
+      "minits": "34"
+    },
+    {
+      "hower": "17",
+      "minits": "36"
+    },
+    {
+      "hower": "17",
+      "minits": "38"
+    },
+    {
+      "hower": "17",
+      "minits": "40"
+    },
+    {
+      "hower": "17",
+      "minits": "42"
+    },
+    {
+      "hower": "17",
+      "minits": "44"
+    },
+    {
+      "hower": "17",
+      "minits": "46"
+    },
+    {
+      "hower": "17",
+      "minits": "48"
+    },
+    {
+      "hower": "17",
+      "minits": "50"
+    },
+    {
+      "hower": "17",
+      "minits": "52"
+    },
+    {
+      "hower": "17",
+      "minits": "54"
+    },
+    {
+      "hower": "17",
+      "minits": "56"
+    },
+    {
+      "hower": "17",
+      "minits": "58"
+    },
+    {
+      "hower": "18",
+      "minits": "00"
+    },
+    {
+      "hower": "18",
+      "minits": "02"
+    },
+    {
+      "hower": "18",
+      "minits": "04"
+    },
+    {
+      "hower": "18",
+      "minits": "06"
+    },
+    {
+      "hower": "18",
+      "minits": "08"
+    },
+    {
+      "hower": "18",
+      "minits": "10"
+    },
+    {
+      "hower": "18",
+      "minits": "12"
+    },
+    {
+      "hower": "18",
+      "minits": "14"
+    },
+    {
+      "hower": "18",
+      "minits": "16"
+    },
+    {
+      "hower": "18",
+      "minits": "18"
+    },
+    {
+      "hower": "18",
+      "minits": "20"
+    },
+    {
+      "hower": "18",
+      "minits": "22"
+    },
+    {
+      "hower": "18",
+      "minits": "24"
+    },
+    {
+      "hower": "18",
+      "minits": "26"
+    },
+    {
+      "hower": "18",
+      "minits": "28"
     },
     {
       "hower": "18",
       "minits": "30"
     },
     {
+      "hower": "18",
+      "minits": "32"
+    },
+    {
+      "hower": "18",
+      "minits": "34"
+    },
+    {
+      "hower": "18",
+      "minits": "36"
+    },
+    {
+      "hower": "18",
+      "minits": "38"
+    },
+    {
+      "hower": "18",
+      "minits": "40"
+    },
+    {
+      "hower": "18",
+      "minits": "42"
+    },
+    {
+      "hower": "18",
+      "minits": "44"
+    },
+    {
+      "hower": "18",
+      "minits": "46"
+    },
+    {
+      "hower": "18",
+      "minits": "48"
+    },
+    {
+      "hower": "18",
+      "minits": "50"
+    },
+    {
+      "hower": "18",
+      "minits": "52"
+    },
+    {
+      "hower": "18",
+      "minits": "54"
+    },
+    {
+      "hower": "18",
+      "minits": "56"
+    },
+    {
+      "hower": "18",
+      "minits": "58"
+    },
+    {
+      "hower": "19",
+      "minits": "00"
+    },
+    {
+      "hower": "19",
+      "minits": "02"
+    },
+    {
+      "hower": "19",
+      "minits": "04"
+    },
+    {
+      "hower": "19",
+      "minits": "06"
+    },
+    {
+      "hower": "19",
+      "minits": "08"
+    },
+    {
+      "hower": "19",
+      "minits": "10"
+    },
+    {
+      "hower": "19",
+      "minits": "12"
+    },
+    {
+      "hower": "19",
+      "minits": "14"
+    },
+    {
+      "hower": "19",
+      "minits": "16"
+    },
+    {
+      "hower": "19",
+      "minits": "18"
+    },
+    {
+      "hower": "19",
+      "minits": "20"
+    },
+    {
+      "hower": "19",
+      "minits": "22"
+    },
+    {
+      "hower": "19",
+      "minits": "24"
+    },
+    {
+      "hower": "19",
+      "minits": "26"
+    },
+    {
+      "hower": "19",
+      "minits": "28"
+    },
+    {
+      "hower": "19",
+      "minits": "30"
+    },
+    {
+      "hower": "19",
+      "minits": "32"
+    },
+    {
+      "hower": "19",
+      "minits": "34"
+    },
+    {
+      "hower": "19",
+      "minits": "36"
+    },
+    {
+      "hower": "19",
+      "minits": "38"
+    },
+    {
+      "hower": "19",
+      "minits": "40"
+    },
+    {
+      "hower": "19",
+      "minits": "42"
+    },
+    {
+      "hower": "19",
+      "minits": "44"
+    },
+    {
+      "hower": "19",
+      "minits": "46"
+    },
+    {
+      "hower": "19",
+      "minits": "48"
+    },
+    {
+      "hower": "19",
+      "minits": "50"
+    },
+    {
+      "hower": "19",
+      "minits": "52"
+    },
+    {
+      "hower": "19",
+      "minits": "54"
+    },
+    {
+      "hower": "19",
+      "minits": "56"
+    },
+    {
+      "hower": "19",
+      "minits": "58"
+    },
+    {
+      "hower": "20",
+      "minits": "00"
+    },
+    {
+      "hower": "20",
+      "minits": "02"
+    },
+    {
+      "hower": "20",
+      "minits": "04"
+    },
+    {
+      "hower": "20",
+      "minits": "06"
+    },
+    {
+      "hower": "20",
+      "minits": "08"
+    },
+    {
+      "hower": "20",
+      "minits": "10"
+    },
+    {
+      "hower": "20",
+      "minits": "12"
+    },
+    {
+      "hower": "20",
+      "minits": "14"
+    },
+    {
+      "hower": "20",
+      "minits": "16"
+    },
+    {
+      "hower": "20",
+      "minits": "18"
+    },
+    {
+      "hower": "20",
+      "minits": "20"
+    },
+    {
+      "hower": "20",
+      "minits": "22"
+    },
+    {
+      "hower": "20",
+      "minits": "24"
+    },
+    {
+      "hower": "20",
+      "minits": "26"
+    },
+    {
+      "hower": "20",
+      "minits": "28"
+    },
+    {
       "hower": "20",
       "minits": "30"
+    },
+    {
+      "hower": "20",
+      "minits": "32"
+    },
+    {
+      "hower": "20",
+      "minits": "34"
+    },
+    {
+      "hower": "20",
+      "minits": "36"
+    },
+    {
+      "hower": "20",
+      "minits": "38"
+    },
+    {
+      "hower": "20",
+      "minits": "40"
+    },
+    {
+      "hower": "20",
+      "minits": "42"
+    },
+    {
+      "hower": "20",
+      "minits": "44"
+    },
+    {
+      "hower": "20",
+      "minits": "46"
+    },
+    {
+      "hower": "20",
+      "minits": "48"
+    },
+    {
+      "hower": "20",
+      "minits": "50"
+    },
+    {
+      "hower": "20",
+      "minits": "52"
+    },
+    {
+      "hower": "20",
+      "minits": "54"
+    },
+    {
+      "hower": "20",
+      "minits": "56"
+    },
+    {
+      "hower": "20",
+      "minits": "58"
+    },
+    {
+      "hower": "21",
+      "minits": "00"
+    },
+    {
+      "hower": "21",
+      "minits": "02"
+    },
+    {
+      "hower": "21",
+      "minits": "04"
+    },
+    {
+      "hower": "21",
+      "minits": "06"
+    },
+    {
+      "hower": "21",
+      "minits": "08"
+    },
+    {
+      "hower": "21",
+      "minits": "10"
+    },
+    {
+      "hower": "21",
+      "minits": "12"
+    },
+    {
+      "hower": "21",
+      "minits": "14"
+    },
+    {
+      "hower": "21",
+      "minits": "16"
+    },
+    {
+      "hower": "21",
+      "minits": "18"
+    },
+    {
+      "hower": "21",
+      "minits": "20"
+    },
+    {
+      "hower": "21",
+      "minits": "22"
+    },
+    {
+      "hower": "21",
+      "minits": "24"
+    },
+    {
+      "hower": "21",
+      "minits": "26"
+    },
+    {
+      "hower": "21",
+      "minits": "28"
+    },
+    {
+      "hower": "21",
+      "minits": "30"
+    },
+    {
+      "hower": "21",
+      "minits": "32"
+    },
+    {
+      "hower": "21",
+      "minits": "34"
+    },
+    {
+      "hower": "21",
+      "minits": "36"
+    },
+    {
+      "hower": "21",
+      "minits": "38"
+    },
+    {
+      "hower": "21",
+      "minits": "40"
+    },
+    {
+      "hower": "21",
+      "minits": "42"
+    },
+    {
+      "hower": "21",
+      "minits": "44"
+    },
+    {
+      "hower": "21",
+      "minits": "46"
+    },
+    {
+      "hower": "21",
+      "minits": "48"
+    },
+    {
+      "hower": "21",
+      "minits": "50"
+    },
+    {
+      "hower": "21",
+      "minits": "52"
+    },
+    {
+      "hower": "21",
+      "minits": "54"
+    },
+    {
+      "hower": "21",
+      "minits": "56"
+    },
+    {
+      "hower": "21",
+      "minits": "58"
+    },
+    {
+      "hower": "22",
+      "minits": "00"
+    },
+    {
+      "hower": "22",
+      "minits": "02"
+    },
+    {
+      "hower": "22",
+      "minits": "04"
+    },
+    {
+      "hower": "22",
+      "minits": "06"
+    },
+    {
+      "hower": "22",
+      "minits": "08"
+    },
+    {
+      "hower": "22",
+      "minits": "10"
+    },
+    {
+      "hower": "22",
+      "minits": "12"
+    },
+    {
+      "hower": "22",
+      "minits": "14"
+    },
+    {
+      "hower": "22",
+      "minits": "16"
+    },
+    {
+      "hower": "22",
+      "minits": "18"
+    },
+    {
+      "hower": "22",
+      "minits": "20"
+    },
+    {
+      "hower": "22",
+      "minits": "22"
+    },
+    {
+      "hower": "22",
+      "minits": "24"
+    },
+    {
+      "hower": "22",
+      "minits": "26"
+    },
+    {
+      "hower": "22",
+      "minits": "28"
     },
     {
       "hower": "22",
       "minits": "30"
     },
     {
+      "hower": "22",
+      "minits": "32"
+    },
+    {
+      "hower": "22",
+      "minits": "34"
+    },
+    {
+      "hower": "22",
+      "minits": "36"
+    },
+    {
+      "hower": "22",
+      "minits": "38"
+    },
+    {
+      "hower": "22",
+      "minits": "40"
+    },
+    {
+      "hower": "22",
+      "minits": "42"
+    },
+    {
+      "hower": "22",
+      "minits": "44"
+    },
+    {
+      "hower": "22",
+      "minits": "46"
+    },
+    {
+      "hower": "22",
+      "minits": "48"
+    },
+    {
+      "hower": "22",
+      "minits": "50"
+    },
+    {
+      "hower": "22",
+      "minits": "52"
+    },
+    {
+      "hower": "22",
+      "minits": "54"
+    },
+    {
+      "hower": "22",
+      "minits": "56"
+    },
+    {
+      "hower": "22",
+      "minits": "58"
+    },
+    {
+      "hower": "23",
+      "minits": "00"
+    },
+    {
+      "hower": "23",
+      "minits": "02"
+    },
+    {
+      "hower": "23",
+      "minits": "04"
+    },
+    {
+      "hower": "23",
+      "minits": "06"
+    },
+    {
+      "hower": "23",
+      "minits": "08"
+    },
+    {
+      "hower": "23",
+      "minits": "10"
+    },
+    {
+      "hower": "23",
+      "minits": "12"
+    },
+    {
+      "hower": "23",
+      "minits": "14"
+    },
+    {
+      "hower": "23",
+      "minits": "16"
+    },
+    {
+      "hower": "23",
+      "minits": "18"
+    },
+    {
+      "hower": "23",
+      "minits": "20"
+    },
+    {
+      "hower": "23",
+      "minits": "22"
+    },
+    {
+      "hower": "23",
+      "minits": "24"
+    },
+    {
+      "hower": "23",
+      "minits": "26"
+    },
+    {
+      "hower": "23",
+      "minits": "28"
+    },
+    {
+      "hower": "23",
+      "minits": "30"
+    },
+    {
+      "hower": "23",
+      "minits": "32"
+    },
+    {
+      "hower": "23",
+      "minits": "34"
+    },
+    {
+      "hower": "23",
+      "minits": "36"
+    },
+    {
+      "hower": "23",
+      "minits": "38"
+    },
+    {
+      "hower": "23",
+      "minits": "40"
+    },
+    {
+      "hower": "23",
+      "minits": "42"
+    },
+    {
+      "hower": "23",
+      "minits": "44"
+    },
+    {
+      "hower": "23",
+      "minits": "46"
+    },
+    {
+      "hower": "23",
+      "minits": "48"
+    },
+    {
+      "hower": "23",
+      "minits": "50"
+    },
+    {
+      "hower": "23",
+      "minits": "52"
+    },
+    {
+      "hower": "23",
+      "minits": "54"
+    },
+    {
+      "hower": "23",
+      "minits": "56"
+    },
+    {
+      "hower": "23",
+      "minits": "58"
+    },
+    {
+      "hower": "00",
+      "minits": "00"
+    },
+    {
+      "hower": "00",
+      "minits": "02"
+    },
+    {
+      "hower": "00",
+      "minits": "04"
+    },
+    {
+      "hower": "00",
+      "minits": "06"
+    },
+    {
+      "hower": "00",
+      "minits": "08"
+    },
+    {
+      "hower": "00",
+      "minits": "10"
+    },
+    {
+      "hower": "00",
+      "minits": "12"
+    },
+    {
+      "hower": "00",
+      "minits": "14"
+    },
+    {
+      "hower": "00",
+      "minits": "16"
+    },
+    {
+      "hower": "00",
+      "minits": "18"
+    },
+    {
+      "hower": "00",
+      "minits": "20"
+    },
+    {
+      "hower": "00",
+      "minits": "22"
+    },
+    {
+      "hower": "00",
+      "minits": "24"
+    },
+    {
+      "hower": "00",
+      "minits": "26"
+    },
+    {
+      "hower": "00",
+      "minits": "28"
+    },
+    {
       "hower": "00",
       "minits": "30"
+    },
+    {
+      "hower": "00",
+      "minits": "32"
+    },
+    {
+      "hower": "00",
+      "minits": "34"
+    },
+    {
+      "hower": "00",
+      "minits": "36"
+    },
+    {
+      "hower": "00",
+      "minits": "38"
+    },
+    {
+      "hower": "00",
+      "minits": "40"
+    },
+    {
+      "hower": "00",
+      "minits": "42"
+    },
+    {
+      "hower": "00",
+      "minits": "44"
+    },
+    {
+      "hower": "00",
+      "minits": "46"
+    },
+    {
+      "hower": "00",
+      "minits": "48"
+    },
+    {
+      "hower": "00",
+      "minits": "50"
+    },
+    {
+      "hower": "00",
+      "minits": "52"
+    },
+    {
+      "hower": "00",
+      "minits": "54"
+    },
+    {
+      "hower": "00",
+      "minits": "56"
+    },
+    {
+      "hower": "00",
+      "minits": "58"
+    },
+    {
+      "hower": "01",
+      "minits": "00"
+    },
+    {
+      "hower": "01",
+      "minits": "02"
+    },
+    {
+      "hower": "01",
+      "minits": "04"
+    },
+    {
+      "hower": "01",
+      "minits": "06"
+    },
+    {
+      "hower": "01",
+      "minits": "08"
+    },
+    {
+      "hower": "01",
+      "minits": "10"
+    },
+    {
+      "hower": "01",
+      "minits": "12"
+    },
+    {
+      "hower": "01",
+      "minits": "14"
+    },
+    {
+      "hower": "01",
+      "minits": "16"
+    },
+    {
+      "hower": "01",
+      "minits": "18"
+    },
+    {
+      "hower": "01",
+      "minits": "20"
+    },
+    {
+      "hower": "01",
+      "minits": "22"
+    },
+    {
+      "hower": "01",
+      "minits": "24"
+    },
+    {
+      "hower": "01",
+      "minits": "26"
+    },
+    {
+      "hower": "01",
+      "minits": "28"
+    },
+    {
+      "hower": "01",
+      "minits": "30"
+    },
+    {
+      "hower": "01",
+      "minits": "32"
+    },
+    {
+      "hower": "01",
+      "minits": "34"
+    },
+    {
+      "hower": "01",
+      "minits": "36"
+    },
+    {
+      "hower": "01",
+      "minits": "38"
+    },
+    {
+      "hower": "01",
+      "minits": "40"
+    },
+    {
+      "hower": "01",
+      "minits": "42"
+    },
+    {
+      "hower": "01",
+      "minits": "44"
+    },
+    {
+      "hower": "01",
+      "minits": "46"
+    },
+    {
+      "hower": "01",
+      "minits": "48"
+    },
+    {
+      "hower": "01",
+      "minits": "50"
+    },
+    {
+      "hower": "01",
+      "minits": "52"
+    },
+    {
+      "hower": "01",
+      "minits": "54"
+    },
+    {
+      "hower": "01",
+      "minits": "56"
+    },
+    {
+      "hower": "01",
+      "minits": "58"
+    },
+    {
+      "hower": "02",
+      "minits": "00"
+    },
+    {
+      "hower": "02",
+      "minits": "02"
+    },
+    {
+      "hower": "02",
+      "minits": "04"
+    },
+    {
+      "hower": "02",
+      "minits": "06"
+    },
+    {
+      "hower": "02",
+      "minits": "08"
+    },
+    {
+      "hower": "02",
+      "minits": "10"
+    },
+    {
+      "hower": "02",
+      "minits": "12"
+    },
+    {
+      "hower": "02",
+      "minits": "14"
+    },
+    {
+      "hower": "02",
+      "minits": "16"
+    },
+    {
+      "hower": "02",
+      "minits": "18"
+    },
+    {
+      "hower": "02",
+      "minits": "20"
+    },
+    {
+      "hower": "02",
+      "minits": "22"
+    },
+    {
+      "hower": "02",
+      "minits": "24"
+    },
+    {
+      "hower": "02",
+      "minits": "26"
+    },
+    {
+      "hower": "02",
+      "minits": "28"
     },
     {
       "hower": "02",
       "minits": "30"
     },
     {
+      "hower": "02",
+      "minits": "32"
+    },
+    {
+      "hower": "02",
+      "minits": "34"
+    },
+    {
+      "hower": "02",
+      "minits": "36"
+    },
+    {
+      "hower": "02",
+      "minits": "38"
+    },
+    {
+      "hower": "02",
+      "minits": "40"
+    },
+    {
+      "hower": "02",
+      "minits": "42"
+    },
+    {
+      "hower": "02",
+      "minits": "44"
+    },
+    {
+      "hower": "02",
+      "minits": "46"
+    },
+    {
+      "hower": "02",
+      "minits": "48"
+    },
+    {
+      "hower": "02",
+      "minits": "50"
+    },
+    {
+      "hower": "02",
+      "minits": "52"
+    },
+    {
+      "hower": "02",
+      "minits": "54"
+    },
+    {
+      "hower": "02",
+      "minits": "56"
+    },
+    {
+      "hower": "02",
+      "minits": "58"
+    },
+    {
+      "hower": "03",
+      "minits": "00"
+    },
+    {
+      "hower": "03",
+      "minits": "02"
+    },
+    {
+      "hower": "03",
+      "minits": "04"
+    },
+    {
+      "hower": "03",
+      "minits": "06"
+    },
+    {
+      "hower": "03",
+      "minits": "08"
+    },
+    {
+      "hower": "03",
+      "minits": "10"
+    },
+    {
+      "hower": "03",
+      "minits": "12"
+    },
+    {
+      "hower": "03",
+      "minits": "14"
+    },
+    {
+      "hower": "03",
+      "minits": "16"
+    },
+    {
+      "hower": "03",
+      "minits": "18"
+    },
+    {
+      "hower": "03",
+      "minits": "20"
+    },
+    {
+      "hower": "03",
+      "minits": "22"
+    },
+    {
+      "hower": "03",
+      "minits": "24"
+    },
+    {
+      "hower": "03",
+      "minits": "26"
+    },
+    {
+      "hower": "03",
+      "minits": "28"
+    },
+    {
+      "hower": "03",
+      "minits": "30"
+    },
+    {
+      "hower": "03",
+      "minits": "32"
+    },
+    {
+      "hower": "03",
+      "minits": "34"
+    },
+    {
+      "hower": "03",
+      "minits": "36"
+    },
+    {
+      "hower": "03",
+      "minits": "38"
+    },
+    {
+      "hower": "03",
+      "minits": "40"
+    },
+    {
+      "hower": "03",
+      "minits": "42"
+    },
+    {
+      "hower": "03",
+      "minits": "44"
+    },
+    {
+      "hower": "03",
+      "minits": "46"
+    },
+    {
+      "hower": "03",
+      "minits": "48"
+    },
+    {
+      "hower": "03",
+      "minits": "50"
+    },
+    {
+      "hower": "03",
+      "minits": "52"
+    },
+    {
+      "hower": "03",
+      "minits": "54"
+    },
+    {
+      "hower": "03",
+      "minits": "56"
+    },
+    {
+      "hower": "03",
+      "minits": "58"
+    },
+    {
+      "hower": "04",
+      "minits": "00"
+    },
+    {
+      "hower": "04",
+      "minits": "02"
+    },
+    {
+      "hower": "04",
+      "minits": "04"
+    },
+    {
+      "hower": "04",
+      "minits": "06"
+    },
+    {
+      "hower": "04",
+      "minits": "08"
+    },
+    {
+      "hower": "04",
+      "minits": "10"
+    },
+    {
+      "hower": "04",
+      "minits": "12"
+    },
+    {
+      "hower": "04",
+      "minits": "14"
+    },
+    {
+      "hower": "04",
+      "minits": "16"
+    },
+    {
+      "hower": "04",
+      "minits": "18"
+    },
+    {
+      "hower": "04",
+      "minits": "20"
+    },
+    {
+      "hower": "04",
+      "minits": "22"
+    },
+    {
+      "hower": "04",
+      "minits": "24"
+    },
+    {
+      "hower": "04",
+      "minits": "26"
+    },
+    {
+      "hower": "04",
+      "minits": "28"
+    },
+    {
       "hower": "04",
       "minits": "30"
     },
     {
+      "hower": "04",
+      "minits": "32"
+    },
+    {
+      "hower": "04",
+      "minits": "34"
+    },
+    {
+      "hower": "04",
+      "minits": "36"
+    },
+    {
+      "hower": "04",
+      "minits": "38"
+    },
+    {
+      "hower": "04",
+      "minits": "40"
+    },
+    {
+      "hower": "04",
+      "minits": "42"
+    },
+    {
+      "hower": "04",
+      "minits": "44"
+    },
+    {
+      "hower": "04",
+      "minits": "46"
+    },
+    {
+      "hower": "04",
+      "minits": "48"
+    },
+    {
+      "hower": "04",
+      "minits": "50"
+    },
+    {
+      "hower": "04",
+      "minits": "52"
+    },
+    {
+      "hower": "04",
+      "minits": "54"
+    },
+    {
+      "hower": "04",
+      "minits": "56"
+    },
+    {
+      "hower": "04",
+      "minits": "58"
+    },
+    {
+      "hower": "05",
+      "minits": "00"
+    },
+    {
+      "hower": "05",
+      "minits": "02"
+    },
+    {
+      "hower": "05",
+      "minits": "04"
+    },
+    {
+      "hower": "05",
+      "minits": "06"
+    },
+    {
+      "hower": "05",
+      "minits": "08"
+    },
+    {
+      "hower": "05",
+      "minits": "10"
+    },
+    {
+      "hower": "05",
+      "minits": "12"
+    },
+    {
+      "hower": "05",
+      "minits": "14"
+    },
+    {
+      "hower": "05",
+      "minits": "16"
+    },
+    {
+      "hower": "05",
+      "minits": "18"
+    },
+    {
+      "hower": "05",
+      "minits": "20"
+    },
+    {
+      "hower": "05",
+      "minits": "22"
+    },
+    {
+      "hower": "05",
+      "minits": "24"
+    },
+    {
+      "hower": "05",
+      "minits": "26"
+    },
+    {
+      "hower": "05",
+      "minits": "28"
+    },
+    {
+      "hower": "05",
+      "minits": "30"
+    },
+    {
+      "hower": "05",
+      "minits": "32"
+    },
+    {
+      "hower": "05",
+      "minits": "34"
+    },
+    {
+      "hower": "05",
+      "minits": "36"
+    },
+    {
+      "hower": "05",
+      "minits": "38"
+    },
+    {
+      "hower": "05",
+      "minits": "40"
+    },
+    {
+      "hower": "05",
+      "minits": "42"
+    },
+    {
+      "hower": "05",
+      "minits": "44"
+    },
+    {
+      "hower": "05",
+      "minits": "46"
+    },
+    {
+      "hower": "05",
+      "minits": "48"
+    },
+    {
+      "hower": "05",
+      "minits": "50"
+    },
+    {
+      "hower": "05",
+      "minits": "52"
+    },
+    {
+      "hower": "05",
+      "minits": "54"
+    },
+    {
+      "hower": "05",
+      "minits": "56"
+    },
+    {
+      "hower": "05",
+      "minits": "58"
+    },
+    {
+      "hower": "06",
+      "minits": "00"
+    },
+    {
+      "hower": "06",
+      "minits": "02"
+    },
+    {
+      "hower": "06",
+      "minits": "04"
+    },
+    {
+      "hower": "06",
+      "minits": "06"
+    },
+    {
+      "hower": "06",
+      "minits": "08"
+    },
+    {
+      "hower": "06",
+      "minits": "10"
+    },
+    {
+      "hower": "06",
+      "minits": "12"
+    },
+    {
+      "hower": "06",
+      "minits": "14"
+    },
+    {
+      "hower": "06",
+      "minits": "16"
+    },
+    {
+      "hower": "06",
+      "minits": "18"
+    },
+    {
+      "hower": "06",
+      "minits": "20"
+    },
+    {
+      "hower": "06",
+      "minits": "22"
+    },
+    {
+      "hower": "06",
+      "minits": "24"
+    },
+    {
+      "hower": "06",
+      "minits": "26"
+    },
+    {
+      "hower": "06",
+      "minits": "28"
+    },
+    {
       "hower": "06",
       "minits": "30"
+    },
+    {
+      "hower": "06",
+      "minits": "32"
+    },
+    {
+      "hower": "06",
+      "minits": "34"
+    },
+    {
+      "hower": "06",
+      "minits": "36"
+    },
+    {
+      "hower": "06",
+      "minits": "38"
+    },
+    {
+      "hower": "06",
+      "minits": "40"
+    },
+    {
+      "hower": "06",
+      "minits": "42"
+    },
+    {
+      "hower": "06",
+      "minits": "44"
+    },
+    {
+      "hower": "06",
+      "minits": "46"
+    },
+    {
+      "hower": "06",
+      "minits": "48"
+    },
+    {
+      "hower": "06",
+      "minits": "50"
+    },
+    {
+      "hower": "06",
+      "minits": "52"
+    },
+    {
+      "hower": "06",
+      "minits": "54"
+    },
+    {
+      "hower": "06",
+      "minits": "56"
+    },
+    {
+      "hower": "06",
+      "minits": "58"
+    },
+    {
+      "hower": "07",
+      "minits": "00"
+    },
+    {
+      "hower": "07",
+      "minits": "02"
+    },
+    {
+      "hower": "07",
+      "minits": "04"
+    },
+    {
+      "hower": "07",
+      "minits": "06"
+    },
+    {
+      "hower": "07",
+      "minits": "08"
+    },
+    {
+      "hower": "07",
+      "minits": "10"
+    },
+    {
+      "hower": "07",
+      "minits": "12"
+    },
+    {
+      "hower": "07",
+      "minits": "14"
+    },
+    {
+      "hower": "07",
+      "minits": "16"
+    },
+    {
+      "hower": "07",
+      "minits": "18"
+    },
+    {
+      "hower": "07",
+      "minits": "20"
+    },
+    {
+      "hower": "07",
+      "minits": "22"
+    },
+    {
+      "hower": "07",
+      "minits": "24"
+    },
+    {
+      "hower": "07",
+      "minits": "26"
+    },
+    {
+      "hower": "07",
+      "minits": "28"
+    },
+    {
+      "hower": "07",
+      "minits": "30"
+    },
+    {
+      "hower": "07",
+      "minits": "32"
+    },
+    {
+      "hower": "07",
+      "minits": "34"
+    },
+    {
+      "hower": "07",
+      "minits": "36"
+    },
+    {
+      "hower": "07",
+      "minits": "38"
+    },
+    {
+      "hower": "07",
+      "minits": "40"
+    },
+    {
+      "hower": "07",
+      "minits": "42"
+    },
+    {
+      "hower": "07",
+      "minits": "44"
+    },
+    {
+      "hower": "07",
+      "minits": "46"
+    },
+    {
+      "hower": "07",
+      "minits": "48"
+    },
+    {
+      "hower": "07",
+      "minits": "50"
+    },
+    {
+      "hower": "07",
+      "minits": "52"
+    },
+    {
+      "hower": "07",
+      "minits": "54"
+    },
+    {
+      "hower": "07",
+      "minits": "56"
+    },
+    {
+      "hower": "07",
+      "minits": "58"
+    },
+    {
+      "hower": "08",
+      "minits": "00"
+    },
+    {
+      "hower": "08",
+      "minits": "02"
+    },
+    {
+      "hower": "08",
+      "minits": "04"
+    },
+    {
+      "hower": "08",
+      "minits": "06"
+    },
+    {
+      "hower": "08",
+      "minits": "08"
+    },
+    {
+      "hower": "08",
+      "minits": "10"
+    },
+    {
+      "hower": "08",
+      "minits": "12"
+    },
+    {
+      "hower": "08",
+      "minits": "14"
+    },
+    {
+      "hower": "08",
+      "minits": "16"
+    },
+    {
+      "hower": "08",
+      "minits": "18"
+    },
+    {
+      "hower": "08",
+      "minits": "20"
+    },
+    {
+      "hower": "08",
+      "minits": "22"
+    },
+    {
+      "hower": "08",
+      "minits": "24"
+    },
+    {
+      "hower": "08",
+      "minits": "26"
+    },
+    {
+      "hower": "08",
+      "minits": "28"
+    },
+    {
+      "hower": "08",
+      "minits": "30"
+    },
+    {
+      "hower": "08",
+      "minits": "32"
+    },
+    {
+      "hower": "08",
+      "minits": "34"
+    },
+    {
+      "hower": "08",
+      "minits": "36"
+    },
+    {
+      "hower": "08",
+      "minits": "38"
+    },
+    {
+      "hower": "08",
+      "minits": "40"
+    },
+    {
+      "hower": "08",
+      "minits": "42"
+    },
+    {
+      "hower": "08",
+      "minits": "44"
+    },
+    {
+      "hower": "08",
+      "minits": "46"
+    },
+    {
+      "hower": "08",
+      "minits": "48"
+    },
+    {
+      "hower": "08",
+      "minits": "50"
+    },
+    {
+      "hower": "08",
+      "minits": "52"
+    },
+    {
+      "hower": "08",
+      "minits": "54"
+    },
+    {
+      "hower": "08",
+      "minits": "56"
+    },
+    {
+      "hower": "08",
+      "minits": "58"
     }
   ]
 }
