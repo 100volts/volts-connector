@@ -44,7 +44,6 @@ async function app() {
       timeSheetUpToDate,
       token
     );
-    //console.log("data sent");
   } catch (err) {
     console.error("Login failed:", err);
   }
@@ -172,7 +171,7 @@ function intitTimeTableGlobalSchedile(
           .padStart(2, "0")}`
       );
       // logic for when time sheet entry comes
-      //checkForTimeSheetUpdates(config, token);
+      checkForTimeSheetUpdates(config, token);
       //displayData(config)
     });
   });
