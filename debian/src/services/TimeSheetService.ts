@@ -15,11 +15,11 @@ try {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: postData,
       }
     );
-    console.log("response",response)
     if (!response.ok) {
       console.log("Response text:", await response.text());
       //  throw new Error("Network response was not ok");
@@ -61,21 +61,20 @@ try {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: postData,
       }
     );
-    console.log("response",response)
     if (!response.ok) {
       console.log("Response text:", await response.text());
       //  throw new Error("Network response was not ok");
     }
 
     const data: TimeSheetResponse = await response.json();
-    return data; // return it so index.ts can use it
+    return data; 
   } catch (e) {
     console.log("Notwork Connection is down");
-    //console.log(e);
   }finally{
     const mockTimeSheetResponse: TimeSheetResponse = {
       status: "success",
