@@ -59,6 +59,7 @@ async function checkForTimeSheetUpdates(
     config.hostname,
     token
   );
+  console.log("timesheetData",timesheetData)
   if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("No updates for timesheet");
   } else {
@@ -87,6 +88,8 @@ async function prepereTimeSheet(
     configData.hostname,
     token
   );
+  console.log("timesheetData",timesheetData)
+
   if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("CONTROLLER_UP_TO_DATE");
     return timeSheet;
@@ -169,7 +172,7 @@ function intitTimeTableGlobalSchedile(
           .padStart(2, "0")}`
       );
       // logic for when time sheet entry comes
-      checkForTimeSheetUpdates(config, token);
+      //checkForTimeSheetUpdates(config, token);
       //displayData(config)
     });
   });
