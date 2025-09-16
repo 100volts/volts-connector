@@ -1,13 +1,20 @@
 import * as http from "http";
-import { TimeSheetEntry, TimeSheetResponse } from "../domain/TimeSheet";
-import {  stopLoadingSpinner } from "../LoadingDisplay";
+import {
+  TimeSheetEntry,
+  TimeSheetResponse,
+} from "../domain/TimeSheet";
+import { stopLoadingSpinner } from "../LoadingDisplay";
 
 export async function getTimeSheetRequestPost(
   companyName: string,
   hostname: string,
   accessToken: string
 ): Promise<TimeSheetResponse> {
-try {
+  try {
+    console.log(
+      "accessToken for calling time-sheet",
+      accessToken
+    );
     const postData = JSON.stringify({ companyName });
     const response = await fetch(
       `http://${hostname}:8081/api/v1/controller/time-sheet`,
@@ -28,24 +35,22 @@ try {
     const data: TimeSheetResponse = await response.json();
     return data; // return it so index.ts can use it
   } catch (e) {
-    console.log("Notwork Connection is down");
-    stopLoadingSpinner("Notwork Connection is down")
+    stopLoadingSpinner("getTimeSheetRequestPost failed");
     //console.log(e);
-  }finally{
-    const mockTimeSheetResponse: TimeSheetResponse = {
-      status: "success",
-      timeSheet: [
-        {
-          id: "1",
-          meterId: "MTR-001",
-          isActive: true,
-          startTime: "08:30",
-          timeoutMinutes: 120,
-        }
-      ]
-    }
-    return Promise.resolve(mockTimeSheetResponse);
   }
+  const mockTimeSheetResponse: TimeSheetResponse = {
+    status: "success",
+    timeSheet: [
+      {
+        id: "1",
+        meterId: "MTR-001",
+        isActive: true,
+        startTime: "08:30",
+        timeoutMinutes: 120,
+      },
+    ],
+  };
+  return Promise.resolve(mockTimeSheetResponse);
 }
 
 export async function getTimeSheetUpdatedInControllerRequestPost(
@@ -53,7 +58,7 @@ export async function getTimeSheetUpdatedInControllerRequestPost(
   hostname: string,
   accessToken: string
 ): Promise<TimeSheetResponse> {
-try {
+  try {
     const postData = JSON.stringify({ companyName });
     const response = await fetch(
       `http://${hostname}:8081/api/v1/controller/time-sheet/set-to-controller`,
@@ -72,22 +77,21 @@ try {
     }
 
     const data: TimeSheetResponse = await response.json();
-    return data; 
+    return data;
   } catch (e) {
     console.log("Notwork Connection is down");
-  }finally{
-    const mockTimeSheetResponse: TimeSheetResponse = {
-      status: "success",
-      timeSheet: [
-        {
-          id: "1",
-          meterId: "MTR-001",
-          isActive: true,
-          startTime: "08:30",
-          timeoutMinutes: 120,
-        }
-      ]
-    }
-    return Promise.resolve(mockTimeSheetResponse);
   }
+  const mockTimeSheetResponse: TimeSheetResponse = {
+    status: "success",
+    timeSheet: [
+      {
+        id: "1",
+        meterId: "MTR-001",
+        isActive: true,
+        startTime: "08:30",
+        timeoutMinutes: 120,
+      },
+    ],
+  };
+  return Promise.resolve(mockTimeSheetResponse);
 }

@@ -13,52 +13,65 @@ import {
   getTimeSheetRequestPost,
   getTimeSheetUpdatedInControllerRequestPost,
 } from "./services/TimeSheetService";
-import { startLoadingSpinner, stopLoadingSpinner } from "./LoadingDisplay";
+import {
+  startLoadingSpinner,
+  stopLoadingSpinner,
+} from "./LoadingDisplay";
+import { isJwtExpired } from "./helpers/JWTHelper";
 
 let scheduledTasks: NodeJS.Timeout[] = [];
 const appInstance = App.getInstance();
 
 async function app() {
   console.log("Hello, app is running");
-  try {
-    startLoadingSpinner("Loading config data...");
-    const timeSheet: TimeSheet =
-      await loadConfig<TimeSheet>("timeSheet.json");
-    await appInstance.loadConfigData();
-    let configData: ConfigData =
-      appInstance.getConfigData();
-    const token = await login(configData.hostname);
-    console.log("Back from login with token:", token);
-    const timeSheetUpToDate = await prepereTimeSheet(
-      configData,
-      timeSheet,
-      token
-    );
-    //Display
-    stopLoadingSpinner("Config data loaded");
-    await wellcome();
+  startLoadingSpinner("Loading config data...");
+  const timeSheet: TimeSheet = await loadConfig<TimeSheet>(
+    "timeSheet.json"
+  );
+  await appInstance.loadConfigData();
+  let configData: ConfigData = appInstance.getConfigData();
+  await timeSheetInti(configData, timeSheet);
+  await wellcome();
+}
 
-    //Initialize timetable
-    intitTimeTableGlobalSchedile(
-      configData,
-      timeSheetUpToDate,
-      token
-    );
-  } catch (err) {
-    console.error("Login failed:", err);
-  }
+async function timeSheetInti(
+  configData: ConfigData,
+  timeSheet: TimeSheet
+) {
+  const token = await login(configData.hostname);
+  console.log("Back from login with token:", token);
+  const timeSheetUpToDate = await prepereTimeSheet(
+    configData,
+    timeSheet,
+    token
+  );
+  //Display
+  stopLoadingSpinner("Config data loaded");
+
+  //Initialize timetable
+  intitTimeTableGlobalSchedile(
+    configData,
+    timeSheetUpToDate,
+    token
+  );
 }
 
 async function checkForTimeSheetUpdates(
   config: ConfigData,
   token: string
 ): Promise<void> {
+  if (isJwtExpired(token)) {
+    console.log("Token expired, re-logging in...");
+    token = await login(config.hostname);
+  }
+
   const timesheetData = await getTimeSheetRequestPost(
     config.companyName,
     config.hostname,
     token
   );
-  console.log("timesheetData",timesheetData)
+
+  console.log("timesheetData", timesheetData);
   if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("No updates for timesheet");
   } else {
@@ -69,6 +82,11 @@ async function checkForTimeSheetUpdates(
       token
     );
     console.log("Time sheet update available");
+    getTimeSheetUpdatedInControllerRequestPost(
+      config.companyName,
+      config.hostname,
+      token
+    );
   }
 }
 
@@ -87,7 +105,7 @@ async function prepereTimeSheet(
     configData.hostname,
     token
   );
-  console.log("timesheetData",timesheetData)
+  console.log("timesheetData", timesheetData);
 
   if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("CONTROLLER_UP_TO_DATE");
@@ -224,4 +242,6 @@ async function wellcome() {
   chalkAnimation.default.neon("Volts-Connector \n");
 }
 
-app();
+(async () => {
+  await app();
+})();
