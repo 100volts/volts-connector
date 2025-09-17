@@ -1,6 +1,6 @@
 {
   "name": "volts-controller",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A modbus reading device for factories running modbus RTU",
   "main": "src/index.js",
   "scripts": {
