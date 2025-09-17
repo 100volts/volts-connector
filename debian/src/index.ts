@@ -23,7 +23,6 @@ let scheduledTasks: NodeJS.Timeout[] = [];
 const appInstance = App.getInstance();
 
 async function app() {
-  console.log("Hello, app is running");
   startLoadingSpinner("Loading config data...");
   const timeSheet: TimeSheet = await loadConfig<TimeSheet>(
     "timeSheet.json"
@@ -235,11 +234,6 @@ function clearScheduledTasks() {
   scheduledTasks.forEach((timer) => clearTimeout(timer));
   scheduledTasks = [];
   console.log("All scheduled tasks cleared");
-}
-
-async function wellcome() {
-  const chalkAnimation = await import("chalk-animation");
-  chalkAnimation.default.neon("Volts-Connector \n");
 }
 
 (async () => {
