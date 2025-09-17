@@ -18,11 +18,13 @@ import {
   stopLoadingSpinner,
 } from "./LoadingDisplay";
 import { isJwtExpired } from "./helpers/JWTHelper";
+import WellcomeView from "./view/WellcomeView";
 
 let scheduledTasks: NodeJS.Timeout[] = [];
 const appInstance = App.getInstance();
 
 async function app() {
+  WellcomeView();
   startLoadingSpinner("Loading config data...");
   const timeSheet: TimeSheet = await loadConfig<TimeSheet>(
     "timeSheet.json"
@@ -30,7 +32,6 @@ async function app() {
   await appInstance.loadConfigData();
   let configData: ConfigData = appInstance.getConfigData();
   await timeSheetInti(configData, timeSheet);
-  await wellcome();
 }
 
 async function timeSheetInti(
@@ -70,7 +71,6 @@ async function checkForTimeSheetUpdates(
     token
   );
 
-  console.log("timesheetData", timesheetData);
   if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("No updates for timesheet");
   } else {
@@ -112,10 +112,6 @@ async function prepereTimeSheet(
   } else {
     const timeSheetBuidl: TimeSheet = buildTimeSheet(
       timesheetData.timeSheet
-    );
-    console.log(
-      "timeSheetBuidl lenght",
-      timeSheetBuidl.readElMeterTimeTable.length
     );
     writeTimeSheetToJson("timeSheet.json", timeSheetBuidl);
     await getTimeSheetUpdatedInControllerRequestPost(
