@@ -1,5 +1,5 @@
 import * as http from "http";
-import { TimeSheetEntry, TimeSheetResponse } from "../domain/TimeSheet";
+import {  TimeSheetResponse } from "../domain/TimeSheet";
 import {  stopLoadingSpinner } from "../LoadingDisplay";
 
 export function getTimeSheetRequestPost(
@@ -35,7 +35,8 @@ export function getTimeSheetRequestPost(
           const parsed: TimeSheetResponse = JSON.parse(responseData);
           resolve(parsed); // ✅ return only the timesheet list
         } catch (err) {
-          reject(`Failed to parse response: ${err}`);
+          //reject(`Failed to parse response: ${err}`);
+          stopLoadingSpinner("Failed to parse response: "+err);
         }
       });
     });
