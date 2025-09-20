@@ -34,9 +34,7 @@ export async function login(
 
     return accessToken; // return it so index.ts can use it
   } catch (e) {
-    console.log("Notwork Connection is down");
-    //console.log(e);
-  } finally {
-    return "";
+    console.log("Notwork Connection is down log in faild");
   }
+  return Promise.resolve("");
 }

@@ -1,101 +1,97 @@
 import * as http from "http";
-import {  TimeSheetResponse } from "../domain/TimeSheet";
-import {  stopLoadingSpinner } from "../LoadingDisplay";
+import {
+  TimeSheetEntry,
+  TimeSheetResponse,
+} from "../domain/TimeSheet";
+import { stopLoadingSpinner } from "../LoadingDisplay";
 
-export function getTimeSheetRequestPost(
+export async function getTimeSheetRequestPost(
   companyName: string,
   hostname: string,
   accessToken: string
 ): Promise<TimeSheetResponse> {
-  const postData = JSON.stringify({ companyName });
+  try {
+    console.log(
+      "accessToken for calling time-sheet",
+      accessToken
+    );
+    const postData = JSON.stringify({ companyName });
+    const response = await fetch(
+      `http://${hostname}:8081/api/v1/controller/time-sheet`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: postData,
+      }
+    );
+    if (!response.ok) {
+      console.log("Response text:", await response.text());
+      //  throw new Error("Network response was not ok");
+    }
 
-  const options: http.RequestOptions = {
-    hostname: hostname,
-    port: 8081,
-    path: "/api/v1/controller/time-sheet",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(postData),
-      Authorization: `Bearer ${accessToken}`,
-    },
-    protocol: "http:",
+    const data: TimeSheetResponse = await response.json();
+    return data; // return it so index.ts can use it
+  } catch (e) {
+    stopLoadingSpinner("getTimeSheetRequestPost failed");
+    //console.log(e);
+  }
+  const mockTimeSheetResponse: TimeSheetResponse = {
+    status: "success",
+    timeSheet: [
+      {
+        id: "1",
+        meterId: "MTR-001",
+        isActive: true,
+        startTime: "08:30",
+        timeoutMinutes: 120,
+      },
+    ],
   };
-
-  return new Promise((resolve, reject) => {
-    const req = http.request(options, (res) => {
-      let responseData = "";
-
-      res.on("data", (chunk) => {
-        responseData += chunk;
-      });
-
-      res.on("end", () => {
-        try {
-          const parsed: TimeSheetResponse = JSON.parse(responseData);
-          resolve(parsed); // ✅ return only the timesheet list
-        } catch (err) {
-          //reject(`Failed to parse response: ${err}`);
-          stopLoadingSpinner("Failed to parse response: "+err);
-        }
-      });
-    });
-
-    req.on("error", (e) => {
-      stopLoadingSpinner("Problem with request send time sheet: "+e.message);
-      //console.log("Problem with request send time sheet: ", e.message);
-      //reject(`Problem with request send time sheet: ${e.message}`);
-    });
-
-    req.write(postData);
-    req.end();
-  });
+  return Promise.resolve(mockTimeSheetResponse);
 }
 
-export function getTimeSheetUpdatedInControllerRequestPost(
-    companyName: string,
-    hostname: string,
-    accessToken: string
-  ): Promise<TimeSheetResponse> {
+export async function getTimeSheetUpdatedInControllerRequestPost(
+  companyName: string,
+  hostname: string,
+  accessToken: string
+): Promise<TimeSheetResponse> {
+  try {
     const postData = JSON.stringify({ companyName });
-  
-    const options: http.RequestOptions = {
-      hostname: hostname,
-      port: 8081,
-      path: "/api/v1/controller/time-sheet/set-to-controller",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": Buffer.byteLength(postData),
-        Authorization: `Bearer ${accessToken}`,
-      },
-      protocol: "http:",
-    };
-  
-    return new Promise((resolve, reject) => {
-      const req = http.request(options, (res) => {
-        let responseData = "";
-  
-        res.on("data", (chunk) => {
-          responseData += chunk;
-        });
-  
-        res.on("end", () => {
-          try {
-            const parsed: TimeSheetResponse = JSON.parse(responseData);
-            resolve(parsed); // ✅ return only the timesheet list
-          } catch (err) {
-            reject(`Failed to parse response: ${err}`);
-          }
-        });
-      });
-  
-      req.on("error", (e) => {
-        console.log("Problem with request send time sheet: ", e.message);
-        //reject(`Problem with request send time sheet: ${e.message}`);
-      });
-  
-      req.write(postData);
-      req.end();
-    });
+    const response = await fetch(
+      `http://${hostname}:8081/api/v1/controller/time-sheet/set-to-controller`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: postData,
+      }
+    );
+    if (!response.ok) {
+      console.log("Response text:", await response.text());
+      //  throw new Error("Network response was not ok");
+    }
+
+    const data: TimeSheetResponse = await response.json();
+    return data;
+  } catch (e) {
+    console.log("Notwork Connection is down");
   }
+  const mockTimeSheetResponse: TimeSheetResponse = {
+    status: "success",
+    timeSheet: [
+      {
+        id: "1",
+        meterId: "MTR-001",
+        isActive: true,
+        startTime: "08:30",
+        timeoutMinutes: 120,
+      },
+    ],
+  };
+  return Promise.resolve(mockTimeSheetResponse);
+}

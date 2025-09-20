@@ -13,52 +13,64 @@ import {
   getTimeSheetRequestPost,
   getTimeSheetUpdatedInControllerRequestPost,
 } from "./services/TimeSheetService";
-import { startLoadingSpinner, stopLoadingSpinner } from "./LoadingDisplay";
+import {
+  startLoadingSpinner,
+  stopLoadingSpinner,
+} from "./LoadingDisplay";
+import { isJwtExpired } from "./helpers/JWTHelper";
+import WellcomeView from "./view/WellcomeView";
 
 let scheduledTasks: NodeJS.Timeout[] = [];
 const appInstance = App.getInstance();
 
 async function app() {
-  console.log("Hello, app is running");
-  try {
-    startLoadingSpinner("Loading config data...");
-    const timeSheet: TimeSheet =
-      await loadConfig<TimeSheet>("timeSheet.json");
-    await appInstance.loadConfigData();
-    let configData: ConfigData =
-      appInstance.getConfigData();
-    const token = await login(configData.hostname);
-    console.log("Back from login with token:", token);
-    const timeSheetUpToDate = await prepereTimeSheet(
-      configData,
-      timeSheet,
-      token
-    );
-    //Display
-    stopLoadingSpinner("Config data loaded");
-    await wellcome();
+  WellcomeView();
+  startLoadingSpinner("Loading config data...");
+  const timeSheet: TimeSheet = await loadConfig<TimeSheet>(
+    "timeSheet.json"
+  );
+  await appInstance.loadConfigData();
+  let configData: ConfigData = appInstance.getConfigData();
+  await timeSheetInti(configData, timeSheet);
+}
 
-    //Initialize timetable
-    intitTimeTableGlobalSchedile(
-      configData,
-      timeSheetUpToDate,
-      token
-    );
-    //console.log("data sent");
-  } catch (err) {
-    console.error("Login failed:", err);
-  }
+async function timeSheetInti(
+  configData: ConfigData,
+  timeSheet: TimeSheet
+) {
+  const token = await login(configData.hostname);
+  console.log("Back from login with token:", token);
+  const timeSheetUpToDate = await prepereTimeSheet(
+    configData,
+    timeSheet,
+    token
+  );
+  //Display
+  stopLoadingSpinner("Config data loaded");
+
+  //Initialize timetable
+  intitTimeTableGlobalSchedile(
+    configData,
+    timeSheetUpToDate,
+    token
+  );
 }
 
 async function checkForTimeSheetUpdates(
   config: ConfigData,
   token: string
 ): Promise<void> {
+  if (isJwtExpired(token)) {
+    console.log("Token expired, re-logging in...");
+    token = await login(config.hostname);
+  }
+
   const timesheetData = await getTimeSheetRequestPost(
     config.companyName,
     config.hostname,
     token
   );
+
   if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("No updates for timesheet");
   } else {
@@ -69,6 +81,11 @@ async function checkForTimeSheetUpdates(
       token
     );
     console.log("Time sheet update available");
+    getTimeSheetUpdatedInControllerRequestPost(
+      config.companyName,
+      config.hostname,
+      token
+    );
   }
 }
 
@@ -87,16 +104,14 @@ async function prepereTimeSheet(
     configData.hostname,
     token
   );
+  console.log("timesheetData", timesheetData);
+
   if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("CONTROLLER_UP_TO_DATE");
     return timeSheet;
   } else {
     const timeSheetBuidl: TimeSheet = buildTimeSheet(
       timesheetData.timeSheet
-    );
-    console.log(
-      "timeSheetBuidl lenght",
-      timeSheetBuidl.readElMeterTimeTable.length
     );
     writeTimeSheetToJson("timeSheet.json", timeSheetBuidl);
     await getTimeSheetUpdatedInControllerRequestPost(
@@ -217,9 +232,6 @@ function clearScheduledTasks() {
   console.log("All scheduled tasks cleared");
 }
 
-async function wellcome() {
-  const chalkAnimation = await import("chalk-animation");
-  chalkAnimation.default.neon("Volts-Connector \n");
-}
-
-app();
+(async () => {
+  await app();
+})();
