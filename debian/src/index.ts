@@ -19,6 +19,8 @@ import {
 } from "./LoadingDisplay";
 import { isJwtExpired } from "./helpers/JWTHelper";
 import WellcomeView from "./view/WellcomeView";
+import ReadMetersTCP from "./modbus/ReadMetersTCP";
+import { ModbusTCPConfig } from "./domain/ModbusTCPConfig";
 
 let scheduledTasks: NodeJS.Timeout[] = [];
 const appInstance = App.getInstance();
@@ -104,7 +106,7 @@ async function prepereTimeSheet(
     configData.hostname,
     token
   );
-  console.log("timesheetData", timesheetData);
+  //console.log("timesheetData", timesheetData);
 
   if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("CONTROLLER_UP_TO_DATE");
@@ -127,6 +129,20 @@ async function readMeterInstructions(config: ConfigData) {
   const token = await login(config.hostname);
   let meterData = await ReadMeters();
   await postMeterData(meterData, "localhost", token);
+  await displayData(meterData);
+}
+
+async function readMeterInstructionsTCP(
+  config: ConfigData
+) {
+  const token = await login(config.hostname);
+  const tcpConfig: ModbusTCPConfig = {
+    host: "localhost", // Replace with your Modbus TCP device IP
+    port: 502, // Standard Modbus TCP port
+    timeout: 5000, // 5 second timeout (optional)
+  };
+  let meterData = await ReadMetersTCP(tcpConfig);
+  //await postMeterData(meterData, "localhost", token);
   await displayData(meterData);
 }
 
@@ -153,6 +169,7 @@ function intitTimeTable(
           .padStart(2, "0")}`
       );
       // logic for when time sheet entry comes
+      readMeterInstructionsTCP(config);
       //displayData(config)
     });
   });
@@ -209,11 +226,13 @@ function scheduleDailyTask(
     }
 
     const delay = nextRun.getTime() - now.getTime();
+    /*
     console.log(
       `Task scheduled to run in ${(delay / 1000).toFixed(
         0
       )}s at ${nextRun}`
     );
+    */
 
     const timer = setTimeout(() => {
       task();

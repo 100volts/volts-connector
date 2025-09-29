@@ -1,0 +1,25 @@
+{
+  "name": "modbus-slave-801",
+  "version": "1.0.0",
+  "description": "Standalone Modbus slave server running on address 801",
+  "main": "modbus-slave-801.js",
+  "scripts": {
+    "start": "node modbus-slave-801.js",
+    "dev": "nodemon modbus-slave-801.js"
+  },
+  "keywords": [
+    "modbus",
+    "slave",
+    "server",
+    "tcp",
+    "industrial"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "modbus-serial": "^8.0.17"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
