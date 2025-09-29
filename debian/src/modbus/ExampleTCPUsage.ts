@@ -1,5 +1,5 @@
 import { ModbusTCPConfig } from "../domain/ModbusTCPConfig";
-import readMetersTCP from "./ReadMetersTCP";
+import { readMetersTCP } from "./ReadMetersTCP";
 /**
  * Example usage of the Modbus TCP meter reading functionality
  */

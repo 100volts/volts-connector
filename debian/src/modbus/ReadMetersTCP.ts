@@ -1,7 +1,64 @@
 import ModbusRTU from "modbus-serial";
 import { ModbusTCPConfig } from "../domain/ModbusTCPConfig";
 
-export default async function readMetersTCP(
+// Standalone exported function to read a single coil at address 801
+// (Moved outside readMetersTCP for correct export)
+export async function readCoil801(
+  config: ModbusTCPConfig,
+  id: any
+): Promise<boolean | null> {
+  const client = new ModbusRTU();
+
+  /**
+   * Read input register 801 (4 registers starting from 801)
+   * @param id Modbus device ID
+   * @returns Promise<number> - decoded double value or -1 on error
+   */
+  const readRegister801 = async (
+    id: any
+  ): Promise<number> => {
+    try {
+      await client.setID(id);
+      const result = await client.readInputRegisters(
+        40001,
+        4
+      );
+      return modbusRegistersToDouble(result.data);
+    } catch (e) {
+      console.error(
+        `Error reading register 801 for device ${id}:`,
+        e
+      );
+      return -1;
+    }
+  };
+
+  try {
+    await client.connectTCP(config.host, {
+      port: config.port,
+    });
+    if (config.timeout) {
+      client.setTimeout(config.timeout);
+    }
+    await client.setID(id);
+    const result = await client.readCoils(801, 1);
+    return result.data[0]; // Returns boolean value
+  } catch (e) {
+    console.error(
+      `Error reading coil 801 for device ${id}:`,
+      e
+    );
+    return null;
+  } finally {
+    try {
+      client.close();
+    } catch (error) {
+      console.error("Error closing connection:", error);
+    }
+  }
+}
+
+export async function readMetersTCP(
   config: ModbusTCPConfig
 ) {
   // Set up Modbus TCP client
@@ -166,6 +223,82 @@ export default async function readMetersTCP(
 
   // Execute main function and return results
   return await main();
+}
+
+/**
+ * Standalone function to read a single coil at address 801
+ * @param config ModbusTCPConfig - connection configuration
+ * @param deviceId Modbus device ID
+ * @returns Promise<boolean | null> - coil state or null on error
+ */
+export async function readSingleCoil801(
+  config: ModbusTCPConfig,
+  deviceId: number
+): Promise<boolean | null> {
+  const client = new ModbusRTU();
+
+  try {
+    await client.connectTCP(config.host, {
+      port: config.port,
+    });
+    if (config.timeout) {
+      client.setTimeout(config.timeout);
+    }
+
+    await client.setID(deviceId);
+    const result = await client.readCoils(801, 1);
+    return result.data[0];
+  } catch (error) {
+    console.error(
+      `Error reading coil 801 for device ${deviceId}:`,
+      error
+    );
+    return null;
+  } finally {
+    try {
+      client.close();
+    } catch (error) {
+      console.error("Error closing connection:", error);
+    }
+  }
+}
+
+/**
+ * Standalone function to read input register 801 (4 registers)
+ * @param config ModbusTCPConfig - connection configuration
+ * @param deviceId Modbus device ID
+ * @returns Promise<number> - decoded value or -1 on error
+ */
+export async function readSingleRegister801(
+  config: ModbusTCPConfig,
+  deviceId: number
+): Promise<number> {
+  const client = new ModbusRTU();
+
+  try {
+    await client.connectTCP(config.host, {
+      port: config.port,
+    });
+    if (config.timeout) {
+      client.setTimeout(config.timeout);
+    }
+
+    await client.setID(deviceId);
+    const result = await client.readInputRegisters(801, 4);
+    return modbusRegistersToDouble(result.data);
+  } catch (error) {
+    console.error(
+      `Error reading register 801 for device ${deviceId}:`,
+      error
+    );
+    return -1;
+  } finally {
+    try {
+      client.close();
+    } catch (error) {
+      console.error("Error closing connection:", error);
+    }
+  }
 }
 
 // Mock data for testing/fallback
