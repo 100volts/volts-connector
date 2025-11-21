@@ -31,6 +31,8 @@ async function app() {
   );
   await appInstance.loadConfigData();
   let configData: ConfigData = appInstance.getConfigData();
+  console.log("first read")
+  await readMeterInstructions(configData);
   await timeSheetInti(configData, timeSheet);
 }
 
@@ -39,7 +41,6 @@ async function timeSheetInti(
   timeSheet: TimeSheet
 ) {
   const token = await login(configData.hostname);
-  console.log("Back from login with token:", token);
   const timeSheetUpToDate = await prepereTimeSheet(
     configData,
     timeSheet,
@@ -125,6 +126,7 @@ async function prepereTimeSheet(
 
 async function readMeterInstructions(config: ConfigData) {
   const token = await login(config.hostname);
+  console.log("Token:", token);
   let meterData = await ReadMeters();
   await postMeterData(meterData, "localhost", token);
   await displayData(meterData);
@@ -185,6 +187,7 @@ function intitTimeTableGlobalSchedile(
       );
       // logic for when time sheet entry comes
       checkForTimeSheetUpdates(config, token);
+      readMeterInstructions(config);
       //displayData(config)
     });
   });
@@ -209,11 +212,12 @@ function scheduleDailyTask(
     }
 
     const delay = nextRun.getTime() - now.getTime();
-    console.log(
+/*    console.log(
       `Task scheduled to run in ${(delay / 1000).toFixed(
         0
       )}s at ${nextRun}`
     );
+    */
 
     const timer = setTimeout(() => {
       task();

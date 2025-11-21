@@ -20,15 +20,13 @@ export default async function readMeters() {
   const getMeterValueLen2 = async (id : any) => {
     const addresses = [1, 3, 5, 13, 15, 17, 25, 27, 29, 37, 39, 41, 65]; //all addresses for len2
     let allFoundAddressData : any = [];
+    await client.connectRTUBuffered("COM3", { baudRate: 9600 });
+    client.setID(id);
     for (let address of addresses) {
-      try {
-        await client.setID(id);
+        await sleep(50);
         let val = await client.readInputRegisters(address, 2).then((res) => {
           allFoundAddressData.push(decodeFloat(res.data));
         });
-      } catch (e) {
-        return -1;
-      }
     }
     console.log("Len 2 Volt data", allFoundAddressData);
     return allFoundAddressData;
@@ -36,12 +34,12 @@ export default async function readMeters() {
 
   const getMetersValue = async (meters :any) => {
     var volatageMeter = [];
-    try {
-      // get value of all meters
       for (let meter of meters) {
         await sleep(50);
         const activePowerData = await getMeterValue(meter.id);
         const len2Data = await getMeterValueLen2(meter.id);
+        console.log("activePowerData",len2Data)
+        console.table(len2Data)
         volatageMeter.push({
           name: meter.name,
           energyActiveImport: len2Data[0],
@@ -61,11 +59,7 @@ export default async function readMeters() {
           energyApparent: len2Data[4].toFixed(4),
         });
       }
-    } catch (e) {
-      console.log(e);//TODO add error handling and logign yes now
-    } finally {
       return volatageMeter;
-    }
   };
 
   const sleep = (ms : number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -73,7 +67,7 @@ export default async function readMeters() {
   async function main() {
     const dataPrep = [
       { id: 1, name: "TBA-8" },
-      { id: 2, name: "Ampak" },
+      /*{ id: 2, name: "Ampak" },
       { id: 3, name: "Ledena Voda" },
       { id: 4, name: "Hladilnici" },
       { id: 5, name: "Kompresorno" },
@@ -81,7 +75,7 @@ export default async function readMeters() {
       { id: 7, name: "Trafo#1-7" },
       { id: 8, name: "HOMO UHT" },
       { id: 9, name: "Priem KM" },
-      { id: 10, name: "Priem UHT" },
+      { id: 10, name: "Priem UHT" },*/
     ];
     
     const now = new Date();
@@ -89,7 +83,9 @@ export default async function readMeters() {
     const time = now.toLocaleTimeString();
 
     const totalPowerData = await getMetersValue(dataPrep);
-    
+    console.log("POWER")
+    console.log("totalPowerData",totalPowerData)
+    console.table(totalPowerData)
     const combined = totalPowerData.map((item:any) => [
         date,
         time,
@@ -100,10 +96,13 @@ export default async function readMeters() {
         item.energyReactiveExport,
         item.energyApparent,
       ]);
+      console.log("combined",combined)
+      console.table(combined)
+      return combined;
   }
 
-  //main();
-  return  mockTotalPowerData;
+  return await main();
+  //return  mockTotalPowerData;
 }
 const mockTotalPowerData = [
     {

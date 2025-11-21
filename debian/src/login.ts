@@ -30,7 +30,6 @@ export async function login(
 
     const data: LoginResponse = await response.json();
     accessToken = data.access_token;
-    console.log("Token:", accessToken);
 
     return accessToken; // return it so index.ts can use it
   } catch (e) {

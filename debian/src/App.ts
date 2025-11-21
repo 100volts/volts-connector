@@ -8,6 +8,7 @@ export default class App {
   private configData: ConfigData;
 
   public async loadConfigData(): Promise<ConfigData | null> {
+    console.log("Loading config data...");
     try {
       this.configData = await loadConfig<ConfigData>(
         "config.json"
@@ -18,10 +19,11 @@ export default class App {
         companyName: "defaultCompany",
         hostname: "defaultHost",
         baudRate: 9600,
-        port: "/dev/ttyUSB0",
+        port: "COM3",
         readTime: 10,
       };
     }
+    console.log("Config data loaded:", this.configData);
     return this.configData;
   }
 
