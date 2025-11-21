@@ -19,6 +19,11 @@ import {
 } from "./LoadingDisplay";
 import { isJwtExpired } from "./helpers/JWTHelper";
 import WellcomeView from "./view/WellcomeView";
+import {
+  readMetersTCP,
+  readCoil801,
+} from "./modbus/ReadMetersTCP";
+import { ModbusTCPConfig } from "./domain/ModbusTCPConfig";
 
 let scheduledTasks: NodeJS.Timeout[] = [];
 const appInstance = App.getInstance();
@@ -40,6 +45,17 @@ async function timeSheetInti(
   configData: ConfigData,
   timeSheet: TimeSheet
 ) {
+  readSingleCoil801(
+    {
+      host: "localhost", // Replace with your Modbus TCP device IP
+      port: 502, // Standard Modbus TCP port
+      timeout: 5000, // 5 second timeout (optional)
+    },
+    801
+  );
+
+  //Начина реда за извикване на четене на електромери
+  /*
   const token = await login(configData.hostname);
   const timeSheetUpToDate = await prepereTimeSheet(
     configData,
@@ -50,11 +66,12 @@ async function timeSheetInti(
   stopLoadingSpinner("Config data loaded");
 
   //Initialize timetable
-  intitTimeTableGlobalSchedile(
+  await intitTimeTableGlobalSchedile(
     configData,
     timeSheetUpToDate,
     token
   );
+  */
 }
 
 async function checkForTimeSheetUpdates(
@@ -76,7 +93,7 @@ async function checkForTimeSheetUpdates(
     console.log("No updates for timesheet");
   } else {
     //reinit timesheets
-    intitTimeTableGlobalSchedile(
+    await intitTimeTableGlobalSchedile(
       config,
       buildTimeSheet(timesheetData.timeSheet),
       token
@@ -105,7 +122,7 @@ async function prepereTimeSheet(
     configData.hostname,
     token
   );
-  console.log("timesheetData", timesheetData);
+  //console.log("timesheetData", timesheetData);
 
   if (timesheetData.status == "CONTROLLER_UP_TO_DATE") {
     console.log("CONTROLLER_UP_TO_DATE");
@@ -132,6 +149,33 @@ async function readMeterInstructions(config: ConfigData) {
   await displayData(meterData);
 }
 
+async function readSingleCoil801(
+  config: ModbusTCPConfig,
+  deviceId: number
+) {
+  readCoil801(config, deviceId).then((state) => {
+    if (state === null) {
+      console.error("Failed to read coil 801");
+    } else {
+      console.log(`Coil 801 state: ${state}`);
+    }
+  });
+}
+
+async function readMeterInstructionsTCP(
+  config: ConfigData
+) {
+  const token = await login(config.hostname);
+  const tcpConfig: ModbusTCPConfig = {
+    host: "localhost", // Replace with your Modbus TCP device IP
+    port: 502, // Standard Modbus TCP port
+    timeout: 5000, // 5 second timeout (optional)
+  };
+  let meterData = await readMetersTCP(tcpConfig);
+  //await postMeterData(meterData, "localhost", token);
+  await displayData(meterData);
+}
+
 function intitTimeTable(
   config: ConfigData,
   timeSheet: TimeSheet
@@ -155,29 +199,31 @@ function intitTimeTable(
           .padStart(2, "0")}`
       );
       // logic for when time sheet entry comes
+      readMeterInstructionsTCP(config);
       //displayData(config)
     });
   });
 }
 
-function intitTimeTableGlobalSchedile(
+async function intitTimeTableGlobalSchedile(
   config: ConfigData,
   timeSheet: TimeSheet,
   token: string
 ) {
-  clearScheduledTasks();
+  //await clearScheduledTasks();
 
-  timeSheet.readElMeterTimeTable.forEach((entry, index) => {
-    const hour = parseInt(entry.hower, 10);
-    const minute = parseInt(entry.minits, 10);
+  await Promise.all(
+    timeSheet.readElMeterTimeTable.map((entry, index) => {
+      const hour = parseInt(entry.hower, 10);
+      const minute = parseInt(entry.minits, 10);
 
-    if (isNaN(hour) || isNaN(minute)) {
-      console.error(
-        `Invalid time in timetable entry ${index}:`,
-        entry
-      );
-      return;
-    }
+      if (isNaN(hour) || isNaN(minute)) {
+        console.error(
+          `Invalid time in timetable entry ${index}:`,
+          entry
+        );
+        return;
+      }
 
     scheduleDailyTask(hour, minute, () => {
       console.log(
@@ -190,7 +236,7 @@ function intitTimeTableGlobalSchedile(
       readMeterInstructions(config);
       //displayData(config)
     });
-  });
+  }));
 }
 
 function scheduleDailyTask(
@@ -218,6 +264,7 @@ function scheduleDailyTask(
       )}s at ${nextRun}`
     );
     */
+    
 
     const timer = setTimeout(() => {
       task();
@@ -230,7 +277,7 @@ function scheduleDailyTask(
   scheduleNextRun(true); // first run uses today's slot if still upcoming
 }
 
-function clearScheduledTasks() {
+async function clearScheduledTasks() {
   scheduledTasks.forEach((timer) => clearTimeout(timer));
   scheduledTasks = [];
   console.log("All scheduled tasks cleared");

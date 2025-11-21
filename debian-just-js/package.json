@@ -1,0 +1,13 @@
+{
+  "name": "debian-just",
+  "version": "0.0.1",
+  "description": "A service can be caled whit a timesheet and addedses",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "test",
+    "start": "node index.js"
+  },
+  "author": "Ivo_Rum",
+  "license": "ISC"
+}
