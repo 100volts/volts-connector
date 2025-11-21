@@ -45,15 +45,16 @@ async function timeSheetInti(
   configData: ConfigData,
   timeSheet: TimeSheet
 ) {
+  
   readSingleCoil801(
     {
       host: "localhost", // Replace with your Modbus TCP device IP
-      port: 502, // Standard Modbus TCP port
+      port: 82, // Standard Modbus TCP port
       timeout: 5000, // 5 second timeout (optional)
     },
     801
   );
-
+  
   //Начина реда за извикване на четене на електромери
   /*
   const token = await login(configData.hostname);
